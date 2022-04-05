@@ -1,17 +1,19 @@
+import metrics.classes.CyclomaticComplexityMetricProcessing;
 import support.classes.ToolBox;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static support.classes.ToolBox.dirList;
-import static support.classes.ToolBox.readFile;
 
 public class Main {
     public static void main(String[] args) {
 
-        List<String> paths = dirList("/home/xela/IdeaProjects/diploma/src/main/java")
+        List<File> filesPaths = dirList("/home/xela/IdeaProjects/diploma/src/main/java");
+
+        List<String> paths = filesPaths
                 .stream()
                 .map(File::toString)
                 .toList();
@@ -20,9 +22,13 @@ public class Main {
                 paths
         );
 
-        System.out.println(
-                paths.stream().map(ToolBox::readFile).collect(Collectors.toList())
-        );
+        CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
+        ccMetric.processMetric(filesPaths.get(0).toPath());
+        System.out.println(ccMetric.getMetric());
+
+//        System.out.println(
+//                paths.stream().map(ToolBox::readFile).collect(Collectors.toList())
+//        );
     }
 }
 
