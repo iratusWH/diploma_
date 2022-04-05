@@ -2,6 +2,7 @@ package metrics.classes;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.*;
 import metrics.classes.implementations.MetricProcessingImpl;
@@ -21,6 +22,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
         try {
             CompilationUnit compilationUnit = StaticJavaParser.parse(path.toFile());
             List<MethodDeclaration> methodDeclarationList = compilationUnit.findAll(MethodDeclaration.class);
+            List<ClassOrInterfaceDeclaration> classDeclaration = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
             Map<String, Integer> methodNamesWithOperatorsCount = new HashMap<>();
 
             methodDeclarationList.forEach(
@@ -37,12 +39,13 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                     )
             );
 
-            String metricResult = CYCLOMATIC_COMPLEXITY + " for method " +
+            String metricResult = CYCLOMATIC_COMPLEXITY + " class " + classDeclaration.get(0).getNameAsString() + " for method " +
                     methodNamesWithOperatorsCount.toString()
                             .replace("{", "")
                             .replace("}", "");
 
             setMetric(metricResult);
+
 
         } catch (FileNotFoundException fileNotFoundException) {
             System.out.println(CYCLOMATIC_COMPLEXITY + " Error");

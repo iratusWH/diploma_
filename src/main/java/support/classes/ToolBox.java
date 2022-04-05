@@ -34,7 +34,7 @@ public class ToolBox {
                         .map(Path::toFile)
                         .orElse(null);
 
-                if (directoryFile.isFile()) {
+                if (directoryFile.isFile() && directoryFile.toString().toLowerCase(Locale.ROOT).contains(".java")) {
                     javaFilesList.add(directoryFile);
                 }
 
@@ -49,7 +49,7 @@ public class ToolBox {
                                     .toList()
                     );
                 }
-                System.out.println("-".repeat(3 * depth) + "| " + filePath);
+                System.out.println("=".repeat(3 * depth) + "| " + filePath);
             }
             directoryList.clear();
             directoryList.addAll(directorySecondList);
