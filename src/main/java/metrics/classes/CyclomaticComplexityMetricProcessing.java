@@ -34,8 +34,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                                     + method.findAll(DoStmt.class).size()
                                     + method.findAll(SwitchEntry.class).size()
                                     + method.findAll(WhileStmt.class).size()
-                                    - method.findAll(ReturnStmt.class).size()
-                                    + 2
+                                    + 1
                     )
             );
 
