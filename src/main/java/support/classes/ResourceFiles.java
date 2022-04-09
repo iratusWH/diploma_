@@ -1,4 +1,4 @@
-package metrics.classes;
+package support.classes;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +29,14 @@ public class ResourceFiles {
     public ResourceFiles(String projectPath){
         this.projectPath = projectPath;
         setFileListByDirectory(projectPath);
+    }
+
+    public File getFileByName(String fileName){
+        return fileList.stream()
+                .filter(
+                        file -> file.toString().contains(fileName))
+                .findFirst()
+                .orElseThrow();
     }
 
     public void setFileListByDirectory(String startDirectory) {

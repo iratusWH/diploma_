@@ -1,6 +1,8 @@
+import metrics.classes.CouplingBetweenObjectsMetricProcessing;
 import metrics.classes.CyclomaticComplexityMetricProcessing;
+import metrics.classes.DepthOfInheritanceTreeMetricProcessing;
 import metrics.classes.HalsteadMetricsProcessing;
-import metrics.classes.ResourceFiles;
+import support.classes.ResourceFiles;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,17 +10,25 @@ public class Main {
         ResourceFiles resourceFiles = new ResourceFiles("/home/xela/IdeaProjects/diploma/src/main/java");
 
         CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
-        HalsteadMetricsProcessing hMetric = new HalsteadMetricsProcessing();
+        CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
+        DepthOfInheritanceTreeMetricProcessing ditMetric = new DepthOfInheritanceTreeMetricProcessing();
         resourceFiles.getFileList()
                 .forEach(
                         file -> {
                             ccMetric.setFile(file);
                             ccMetric.processMetric();
                             ccMetric.printMetric();
-                            hMetric.setFile(file);
-                            hMetric.processMetric();
+                            cboMetric.setFile(file);
+                            cboMetric.processMetric();
+                            cboMetric.printMetric();
+
+
                         }
                 );
+
+        ditMetric.setFileList(resourceFiles.getFileList());
+        ditMetric.processMetric();
+        ditMetric.printMetric();
     }
 }
 
