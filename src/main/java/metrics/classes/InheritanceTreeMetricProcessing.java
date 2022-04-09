@@ -1,13 +1,27 @@
 package metrics.classes;
 
-import metrics.classes.implementations.MetricProcessingImpl;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import metrics.classes.implementations.ComplexProcessingImpl;
 
-import java.nio.file.Path;
+import java.io.File;
 
-public class InheritanceTreeMetricProcessing extends MetricProcessingImpl {
+@Data
+@Slf4j
+public class InheritanceTreeMetricProcessing extends ComplexProcessingImpl {
 
     @Override
-    public void processMetric(Path path) {
+    public void processMetric() {
+
+    }
+
+    @Override
+    public void printMetric() {
+
+    }
+
+    @Override
+    public void preprocessOutput() {
 
     }
 }

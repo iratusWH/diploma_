@@ -4,26 +4,36 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.stmt.DoStmt;
+import com.github.javaparser.ast.stmt.ForEachStmt;
+import com.github.javaparser.ast.stmt.ForStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.SwitchEntry;
+import com.github.javaparser.ast.stmt.WhileStmt;
+import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 
 import java.io.FileNotFoundException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
-    private final static String CYCLOMATIC_COMPLEXITY = "Cyclomatic Complexity Metric";
+    private static final String CYCLOMATIC_COMPLEXITY = "Cyclomatic Complexity Metric";
+
+    private List<ClassOrInterfaceDeclaration> classDeclaration;
+    private Map<String, Integer> methodNamesWithOperatorsCount;
 
     @Override
-    public void processMetric(Path path) {
+    public void processMetric() {
         try {
-            CompilationUnit compilationUnit = StaticJavaParser.parse(path.toFile());
+            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
+
             List<MethodDeclaration> methodDeclarationList = compilationUnit.findAll(MethodDeclaration.class);
-            List<ClassOrInterfaceDeclaration> classDeclaration = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
-            Map<String, Integer> methodNamesWithOperatorsCount = new HashMap<>();
+            classDeclaration = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
+            methodNamesWithOperatorsCount = new HashMap<>();
 
             methodDeclarationList.forEach(
                     method -> methodNamesWithOperatorsCount.put(
@@ -38,18 +48,22 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                     )
             );
 
-            String metricResult = CYCLOMATIC_COMPLEXITY + " class " + classDeclaration.get(0).getNameAsString() + " for method " +
-                    methodNamesWithOperatorsCount.toString()
-                            .replace("{", "")
-                            .replace("}", "");
-
-            setMetric(metricResult);
-
+            preprocessOutput();
 
         } catch (FileNotFoundException fileNotFoundException) {
-            System.out.println(CYCLOMATIC_COMPLEXITY + " Error");
+            log.info(CYCLOMATIC_COMPLEXITY + " Error");
             setMetric(CYCLOMATIC_COMPLEXITY + " got error");
         }
+    }
+
+    @Override
+    public void preprocessOutput() {
+        String metricResult = CYCLOMATIC_COMPLEXITY + " class " + classDeclaration.get(0).getNameAsString() + " for method " +
+                methodNamesWithOperatorsCount.toString()
+                        .replace("{", "")
+                        .replace("}", "");
+
+        setMetric(metricResult);
     }
 
 }
