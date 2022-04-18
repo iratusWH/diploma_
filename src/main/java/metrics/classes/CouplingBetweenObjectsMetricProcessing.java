@@ -30,16 +30,34 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
         try {
             imports = new ArrayList<>();
             CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
-            compilationUnit.getImports().forEach(imp0rt -> imports.add(imp0rt.getName()));
 
-            classDeclaration = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).map(ClassOrInterfaceDeclaration::getNameAsString).orElse("UnknownClass");
-            Set<Name> distinctImports = new HashSet<>(imports);
-            imports = distinctImports.stream().toList();
+            addNotStandardImports(compilationUnit);
+            distinctImports();
+            classDeclaration = getClassName(compilationUnit);
 
             preprocessOutput();
-        } catch (FileNotFoundException fileNotFoundException){
+
+        } catch (FileNotFoundException fileNotFoundException) {
             log.error("File isn't find");
         }
+    }
+
+    private void addNotStandardImports(CompilationUnit compilationUnit){
+        compilationUnit.getImports().forEach(imp0rt -> {
+            if (!imp0rt.getNameAsString().contains("java.")) imports.add(imp0rt.getName());
+        });
+    }
+
+    private void distinctImports(){
+        Set<Name> distinctImports = new HashSet<>(imports);
+        imports = distinctImports.stream().toList();
+        log.info("CBO imports: {}", distinctImports); // TO DO: delete when not need
+    }
+
+    private String getClassName(CompilationUnit compilationUnit){
+        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
+                .map(ClassOrInterfaceDeclaration::getNameAsString)
+                .orElse("UnknownClass");
     }
 
     @Override

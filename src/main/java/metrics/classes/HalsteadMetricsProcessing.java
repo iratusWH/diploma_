@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -48,10 +49,8 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         try {
             compilationUnit = StaticJavaParser.parse(getFile());
 
-            Optional<TypeDeclaration<?>> declaration = compilationUnit.getPrimaryType();
-            System.out.println(declaration.map(TypeDeclaration::getName));
-        } catch (IOException exception){
-            System.out.println("Some problem");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

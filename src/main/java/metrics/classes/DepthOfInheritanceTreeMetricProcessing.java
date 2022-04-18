@@ -47,7 +47,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
     }
 
     public int visitor(File classFile) throws FileNotFoundException {
-        int temp;
+        int temporaryIndex;
         compilationUnit = StaticJavaParser.parse(classFile);
 
         ClassOrInterfaceDeclaration clazz = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow();
@@ -71,10 +71,10 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
                 .toList()
                 .get(0);
 
-        temp = 1 + visitor(parentClassFile);
-        depthOfInheritance.put(parent, temp);
+        temporaryIndex = 1 + visitor(parentClassFile);
+        depthOfInheritance.put(parent, temporaryIndex);
 
-        return temp;
+        return temporaryIndex;
     }
 
     private void filterFileList() {
@@ -95,6 +95,9 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
         setFileList(filteredList);
     }
+
+
+
 
     @Override
     public void preprocessOutput() {

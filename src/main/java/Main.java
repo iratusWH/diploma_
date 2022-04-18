@@ -1,13 +1,12 @@
 import metrics.classes.CouplingBetweenObjectsMetricProcessing;
 import metrics.classes.CyclomaticComplexityMetricProcessing;
 import metrics.classes.DepthOfInheritanceTreeMetricProcessing;
-import metrics.classes.HalsteadMetricsProcessing;
 import support.classes.ResourceFiles;
 
 public class Main {
     public static void main(String[] args) {
 
-        ResourceFiles resourceFiles = new ResourceFiles("/home/xela/IdeaProjects/diploma/src/main/java");
+        ResourceFiles resourceFiles = new ResourceFiles("C:\\Users\\aleksandr.markelov\\IdeaProjects\\diploma_");
 
         CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
         CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
