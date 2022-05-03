@@ -4,4 +4,5 @@ public interface MetricProcessing {
     void processMetric();
     void printMetric();
     void preprocessOutput();
+    void preprocessHTML();
 }

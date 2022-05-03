@@ -6,7 +6,7 @@ import support.classes.ResourceFiles;
 public class Main {
     public static void main(String[] args) {
 
-        ResourceFiles resourceFiles = new ResourceFiles("C:\\Users\\aleksandr.markelov\\IdeaProjects\\diploma_");
+        ResourceFiles resourceFiles = new ResourceFiles("/home/xela/IdeaProjects/diploma");
 
         CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
         CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
@@ -17,6 +17,7 @@ public class Main {
                             ccMetric.setFile(file);
                             ccMetric.processMetric();
                             ccMetric.printMetric();
+                            
                             cboMetric.setFile(file);
                             cboMetric.processMetric();
                             cboMetric.printMetric();

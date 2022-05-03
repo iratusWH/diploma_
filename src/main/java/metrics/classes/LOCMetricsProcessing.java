@@ -1,8 +1,8 @@
 package metrics.classes;
 
-import metrics.classes.implementations.ComplexMetricProcessingImpl;
+import metrics.classes.implementations.MetricProcessingImpl;
 
-public class LOCMetricsProcessing extends ComplexMetricProcessingImpl {
+public class LOCMetricsProcessing extends MetricProcessingImpl {
 
 
     @Override

@@ -33,8 +33,7 @@ public class ResourceFiles {
 
     public File getFileByName(String fileName){
         return fileList.stream()
-                .filter(
-                        file -> file.toString().contains(fileName))
+                .filter(file -> fileName.equalsIgnoreCase(file.getName()))
                 .findFirst()
                 .orElseThrow();
     }

@@ -18,4 +18,8 @@ public abstract class MetricProcessingImpl implements MetricProcessing {
         log.info(metric);
     }
 
+    @Override
+    public void preprocessHTML() {
+
+    }
 }
