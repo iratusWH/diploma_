@@ -4,15 +4,13 @@ import com.github.javaparser.ast.CompilationUnit;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import metrics.interfaces.MetricProcessing;
-
-import java.io.File;
-import java.util.List;
+import support.classes.ResourceFiles;
 
 @Slf4j
 @Data
 public abstract class ComplexMetricProcessingImpl implements MetricProcessing {
 
-    private List<File> fileList;
+    private ResourceFiles fileList;
     private String metric;
     protected CompilationUnit compilationUnit;
 

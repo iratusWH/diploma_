@@ -8,25 +8,25 @@ public class Main {
 
         ResourceFiles resourceFiles = new ResourceFiles("/home/xela/IdeaProjects/diploma");
 
-        CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
-        CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
+//        CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
+//        CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
         DepthOfInheritanceTreeMetricProcessing ditMetric = new DepthOfInheritanceTreeMetricProcessing();
-        resourceFiles.getFileList()
-                .forEach(
-                        file -> {
-                            ccMetric.setFile(file);
-                            ccMetric.processMetric();
-                            ccMetric.printMetric();
-                            
-                            cboMetric.setFile(file);
-                            cboMetric.processMetric();
-                            cboMetric.printMetric();
+//        resourceFiles.getFileList()
+//                .forEach(
+//                        file -> {
+//                            ccMetric.setFile(file);
+//                            ccMetric.processMetric();
+//                            ccMetric.printMetric();
+//
+//                            cboMetric.setFile(file);
+//                            cboMetric.processMetric();
+//                            cboMetric.printMetric();
+//
+//
+//                        }
+//                );
 
-
-                        }
-                );
-
-        ditMetric.setFileList(resourceFiles.getFileList());
+        ditMetric.setFileList(resourceFiles);
         ditMetric.processMetric();
         ditMetric.printMetric();
     }

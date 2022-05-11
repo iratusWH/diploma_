@@ -1,10 +1,10 @@
 package support.classes;
 
-import lombok.AllArgsConstructor;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +25,8 @@ public class ResourceFiles {
 
     private String projectPath;
     private List<File> fileList;
+    private List<File> filteredFileList;
+    private CompilationUnit compilationUnit;
 
     public ResourceFiles(String projectPath){
         this.projectPath = projectPath;
@@ -96,6 +98,33 @@ public class ResourceFiles {
         }
 
         fileList = javaFilesList;
+    }
+
+    public void filterFileList() {
+        List<File> filteredList = getFileList().stream()
+                .filter(this::isFileClass)
+                .toList();
+
+        setFilteredFileList(filteredList);
+    }
+
+    private boolean isFileClass(File file){
+        try {
+            return isClassFile(StaticJavaParser.parse(file));
+        } catch (FileNotFoundException e) {
+            log.error("ResourceFiles error while filtering list: ", e);
+        }
+        return false;
+    }
+
+    private boolean isClassFile(CompilationUnit compilationUnit){
+        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class,
+                        element -> !isEnumInterfaceOrRecordDeclaration(element))
+                .isPresent();
+    }
+
+    private boolean isEnumInterfaceOrRecordDeclaration(ClassOrInterfaceDeclaration declaration){
+        return declaration.isEnumDeclaration() || declaration.isInterface() || declaration.isEnumConstantDeclaration() || declaration.isRecordDeclaration();
     }
 
 }
