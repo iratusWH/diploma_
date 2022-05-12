@@ -3,6 +3,8 @@ package metrics.classes.implementations;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import metrics.interfaces.MetricProcessing;
+import support.classes.HTMLComponent;
+import support.classes.MetricNameEnum;
 
 import java.io.File;
 
@@ -11,6 +13,7 @@ import java.io.File;
 public abstract class MetricProcessingImpl implements MetricProcessing {
 
     private String metric;
+    private MetricNameEnum metricName;
     private File file;
 
     @Override
@@ -19,7 +22,10 @@ public abstract class MetricProcessingImpl implements MetricProcessing {
     }
 
     @Override
-    public void preprocessHTML() {
-
+    public HTMLComponent getHTMLComponent() {
+        return HTMLComponent.builder().metric(metric)
+                .metricName(metricName)
+                .directoryAndFileName(file.getPath())
+                .build();
     }
 }

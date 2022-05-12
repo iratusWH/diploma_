@@ -1,8 +1,10 @@
+import lombok.extern.slf4j.Slf4j;
 import metrics.classes.CouplingBetweenObjectsMetricProcessing;
-import metrics.classes.CyclomaticComplexityMetricProcessing;
+//import metrics.classes.CyclomaticComplexityMetricProcessing;
 import metrics.classes.DepthOfInheritanceTreeMetricProcessing;
 import support.classes.ResourceFiles;
 
+@Slf4j
 public class Main {
     public static void main(String[] args) {
 
@@ -21,14 +23,14 @@ public class Main {
 //                            cboMetric.setFile(file);
 //                            cboMetric.processMetric();
 //                            cboMetric.printMetric();
-//
+//                            log.info("obj {}", cboMetric.getHTMLComponent());
 //
 //                        }
 //                );
 
         ditMetric.setFileList(resourceFiles);
         ditMetric.processMetric();
-        ditMetric.printMetric();
+        log.info("{}", ditMetric.getHTMLComponent());
     }
 }
 

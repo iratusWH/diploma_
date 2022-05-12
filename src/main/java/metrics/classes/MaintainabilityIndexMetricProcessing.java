@@ -17,8 +17,4 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
 
     }
 
-    @Override
-    public void preprocessOutput() {
-
-    }
 }

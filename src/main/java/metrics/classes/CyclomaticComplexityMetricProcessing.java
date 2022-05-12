@@ -12,6 +12,7 @@ import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.WhileStmt;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
+import support.classes.MetricNameEnum;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -25,6 +26,10 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
     private List<ClassOrInterfaceDeclaration> classDeclaration;
     private Map<String, Integer> methodNamesWithOperatorsCount;
+
+    CyclomaticComplexityMetricProcessing(){
+        setMetricName(MetricNameEnum.CYCLOMATIC_COMPLEXITY_METRIC);
+    }
 
     @Override
     public void processMetric() {
@@ -48,22 +53,12 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                     )
             );
 
-            preprocessOutput();
 
         } catch (FileNotFoundException fileNotFoundException) {
-            log.info(CYCLOMATIC_COMPLEXITY + " Error");
-            setMetric(CYCLOMATIC_COMPLEXITY + " got error");
+            log.error("Error file not find {}", getMetricName());
         }
     }
 
-    @Override
-    public void preprocessOutput() {
-        String metricResult = CYCLOMATIC_COMPLEXITY + " class " + classDeclaration.get(0).getNameAsString() + " for method " +
-                methodNamesWithOperatorsCount.toString()
-                        .replace("{", "")
-                        .replace("}", "");
 
-        setMetric(metricResult);
-    }
 
 }

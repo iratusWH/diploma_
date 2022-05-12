@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.ComplexMetricProcessingImpl;
+import support.classes.MetricNameEnum;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,29 +22,38 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
     private int maxDepth;
     private Map<String, Integer> depthOfInheritance;
-    private static final String DEPTH_OF_INHERITANCE_TREE = "Depth of inheritance tree";
+    private String className;
+
+    public DepthOfInheritanceTreeMetricProcessing(){
+        setMetricName(MetricNameEnum.DEPTH_OF_INHERITANCE_METRIC);
+    }
 
     @Override
     public void processMetric() {
         depthOfInheritance = new HashMap<>();
-        int tempDepth;
-        int depth = 0;
-
         getFileList().filterFileList();
-        List<File> classFiles= getFileList().getFilteredFileList();
+        List<File> classFiles = getFileList().getFilteredFileList();
         try {
-            for (File classFile : classFiles) {
-                tempDepth = visitor(classFile);
-                log.info("Inheritance tree {}", tempDepth);
-                depth = Math.max(tempDepth, depth);
-            }
+            setMetric(String.valueOf(searchMaxDepthOfInheritance(classFiles)));
+            setFileName(className);
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File not found!");
         }
 
-        maxDepth = depth;
+    }
 
-        preprocessOutput();
+    public int searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException{
+        int depth = 0;
+        int tempDepth;
+        for (File classFile : classFiles) {
+            tempDepth = visitor(classFile);
+            log.info("File - {}; Inheritance tree - {}", classFile.getName(), tempDepth);
+            if (tempDepth > depth){
+                depth = tempDepth;
+                className = classFile.getPath();
+            }
+        }
+        return depth;
     }
 
     public int visitor(File classFile) throws FileNotFoundException {
@@ -67,23 +76,11 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
                 .map(NodeWithSimpleName::getNameAsString)
                 .orElseThrow();
 
-        File parentClassFile = getFileList().getFileByName(parent);
+        File parentClassFile = getFileList().getFileByName(parent + ".java");
 
         temporaryIndex = 1 + visitor(parentClassFile);
         depthOfInheritance.put(parent, temporaryIndex);
 
         return temporaryIndex;
-    }
-
-    @Override
-    public void preprocessOutput() {
-        String metricResult = DEPTH_OF_INHERITANCE_TREE.concat(" = ").concat(Integer.toString(maxDepth));
-
-        setMetric(metricResult);
-    }
-
-    @Override
-    public void preprocessHTML() {
-
     }
 }

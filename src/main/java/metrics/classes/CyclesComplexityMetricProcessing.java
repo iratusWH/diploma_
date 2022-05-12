@@ -8,8 +8,4 @@ public class CyclesComplexityMetricProcessing extends MetricProcessingImpl {
 
     }
 
-    @Override
-    public void preprocessOutput() {
-
-    }
 }

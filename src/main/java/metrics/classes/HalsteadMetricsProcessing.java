@@ -54,9 +54,4 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         }
     }
 
-    @Override
-    public void preprocessOutput() {
-
-    }
-
 }

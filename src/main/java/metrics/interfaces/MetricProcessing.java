@@ -1,8 +1,9 @@
 package metrics.interfaces;
 
+import support.classes.HTMLComponent;
+
 public interface MetricProcessing {
     void processMetric();
     void printMetric();
-    void preprocessOutput();
-    void preprocessHTML();
+    HTMLComponent getHTMLComponent();
 }

@@ -11,7 +11,8 @@ public enum MetricNameEnum {
     CYCLOMATIC_COMPLEXITY_METRIC("Cyclomatic Complexity Metric"),
     DEPTH_OF_INHERITANCE_METRIC("Depth of Inheritance Metric"),
     HALSTEAD_METRICS("Halstead Metrics"),
-    MAINTAINABILITY_INDEX_METRIC("Maintainability Index Metric");
+    MAINTAINABILITY_INDEX_METRIC("Maintainability Index Metric"),
+    LINES_OF_CODE_METRIC("Lines of code");
 
     final String name;
 }

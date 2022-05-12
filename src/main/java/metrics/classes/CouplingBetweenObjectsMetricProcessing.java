@@ -2,12 +2,12 @@ package metrics.classes;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
+import support.classes.MetricNameEnum;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,10 +20,11 @@ import java.util.Set;
 @Data
 public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl {
 
-    private static final String COUPLING_BETWEEN_OBJECTS = "Coupling Between Objects";
-
     private List<Name> imports;
-    private String classDeclaration;
+
+    public CouplingBetweenObjectsMetricProcessing(){
+        setMetricName(MetricNameEnum.COUPLING_BETWEEN_OBJECTS_METRIC);
+    }
 
     @Override
     public void processMetric() {
@@ -33,10 +34,7 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
 
             addNotStandardImports(compilationUnit);
             distinctImports();
-            classDeclaration = getClassName(compilationUnit);
-
-            preprocessOutput();
-
+            setMetric(String.valueOf(imports.size()));
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File isn't find");
         }
@@ -51,20 +49,6 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
     private void distinctImports(){
         Set<Name> distinctImports = new HashSet<>(imports);
         imports = distinctImports.stream().toList();
-        log.info("CBO imports: {}", distinctImports); // TO DO: delete when not need
-    }
-
-    private String getClassName(CompilationUnit compilationUnit){
-        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
-                .map(ClassOrInterfaceDeclaration::getNameAsString)
-                .orElse("UnknownClass");
-    }
-
-    @Override
-    public void preprocessOutput() {
-        String metricResult = COUPLING_BETWEEN_OBJECTS + " class " + classDeclaration + " CBO = " +
-                imports.size();
-
-        setMetric(metricResult);
+        log.info("CBO imports: {}", distinctImports);
     }
 }
