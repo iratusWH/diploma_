@@ -10,6 +10,7 @@ import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.WhileStmt;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 import support.classes.MetricNameEnum;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@Data
 public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
     private static final String CYCLOMATIC_COMPLEXITY = "Cyclomatic Complexity Metric";
@@ -53,6 +55,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                     )
             );
 
+        setMetric(methodNamesWithOperatorsCount);
 
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("Error file not find {}", getMetricName());

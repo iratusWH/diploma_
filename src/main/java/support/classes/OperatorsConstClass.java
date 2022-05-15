@@ -2,7 +2,10 @@ package support.classes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OperatorsConstClass {
     public static final String SPACE_STRING = " ";
@@ -118,10 +121,23 @@ public class OperatorsConstClass {
             ">>>="
     );
 
-    public final List<String> ALL_OPERATORS_LIST;
-    {
-        ALL_OPERATORS_LIST = new ArrayList<>(OPERATORS_LIST);
-        ALL_OPERATORS_LIST.addAll(OPERATORS_KEYWORDS_LIST);
-        ALL_OPERATORS_LIST.addAll(OPERATORS_SEPARATORS_LIST);
-    }
+    public static final List<String> ALL_OPERATORS_LIST = Stream.of(
+            OPERATORS_LIST,
+            OPERATORS_KEYWORDS_LIST,
+            OPERATORS_SEPARATORS_LIST)
+            .flatMap(Collection::stream)
+            .toList();
+
+    public static final String JAVADOC_OR_MULTILINE_COMMENT = "/*";
+    public static final String ONE_LINE_COMMENT = "//";
+    public static final List<String> ESCAPE_SEQUENCES = Arrays.asList(
+            "\t",
+            "\n",
+            "\b",
+            "\r",
+            "\f",
+            "'",
+            "\\"
+    );
+
 }
