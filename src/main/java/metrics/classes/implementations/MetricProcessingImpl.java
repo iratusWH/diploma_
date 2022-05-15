@@ -12,18 +12,18 @@ import java.io.File;
 @Data
 public abstract class MetricProcessingImpl implements MetricProcessing {
 
-    private String metric;
+    private Object metric;
     private MetricNameEnum metricName;
     private File file;
 
     @Override
     public void printMetric() {
-        log.info(metric);
+        log.info(metric.toString());
     }
 
     @Override
     public HTMLComponent getHTMLComponent() {
-        return HTMLComponent.builder().metric(metric)
+        return HTMLComponent.builder().metric(metric.toString())
                 .metricName(metricName)
                 .directoryAndFileName(file.getPath())
                 .build();

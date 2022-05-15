@@ -13,20 +13,20 @@ import support.classes.ResourceFiles;
 public abstract class ComplexMetricProcessingImpl implements MetricProcessing {
 
     private ResourceFiles fileList;
-    private String metric;
+    private Object metric;
     private MetricNameEnum metricName;
     protected CompilationUnit compilationUnit;
     private String fileName;
 
     @Override
     public void printMetric() {
-        log.info(metric);
+        log.info(metric.toString());
     }
 
     @Override
     public HTMLComponent getHTMLComponent(){
         return HTMLComponent.builder()
-                .metric(metric)
+                .metric(metric.toString())
                 .metricName(metricName)
                 .directoryAndFileName(fileName)
                 .build();
