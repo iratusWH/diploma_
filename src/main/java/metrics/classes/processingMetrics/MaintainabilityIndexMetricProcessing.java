@@ -1,4 +1,4 @@
-package metrics.classes;
+package metrics.classes.processingMetrics;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,17 +30,22 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
 
     @Override
     public void processMetric() {
+        double metric = (171.0 - 5.2 * Math.log(halsteadMetricsProcessing.getVocabulary()) - 0.23 * getMaxCyclomaticComplexity() - 16.2 * Math.log(getLOC())) * 100.0 / 171.0;
 
-        setMetric((171.0 - 5.2 * Math.log(halsteadMetricsProcessing.getVocabulary()) - 0.23 * getMaxCyclomaticComplexity() - 16.2 * getLOC()) * 100.0 / 171.0);
+        log.info("MaintainabilityIndexMetricProcessing: metric - {}", metric);
+
+        setMetric(metric);
     }
 
     public Integer getMaxCyclomaticComplexity() {
         List<Integer> cyclomaticComplexitiesOfCMethods = cyclomaticComplexityMetric.getMethodNamesWithOperatorsCount().values().stream().toList();
+        if (cyclomaticComplexitiesOfCMethods.isEmpty())
+            return 0;
+
         return Collections.max(cyclomaticComplexitiesOfCMethods);
     }
 
     public Integer getLOC() {
-        return Integer.getInteger(
-                String.valueOf(locMetricsProcessing.getMetric()));
+        return (Integer) locMetricsProcessing.getMetric();
     }
 }

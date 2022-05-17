@@ -1,4 +1,4 @@
-package metrics.classes;
+package metrics.classes.processingMetrics;
 
 import com.github.javaparser.*;
 import com.github.javaparser.ast.CompilationUnit;
@@ -169,6 +169,5 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
                 .orElseThrow()
                 .end;
     }
-
 
 }

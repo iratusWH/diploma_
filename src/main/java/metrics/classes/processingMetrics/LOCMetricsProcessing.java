@@ -1,4 +1,4 @@
-package metrics.classes;
+package metrics.classes.processingMetrics;
 
 import com.github.javaparser.Range;
 import com.github.javaparser.StaticJavaParser;
@@ -30,8 +30,7 @@ public class LOCMetricsProcessing extends MetricProcessingImpl {
         setMetric(
                 compilationUnit.getRange()
                         .map(Range::getLineCount)
-                        .map(String::valueOf)
-                        .orElse("0")
+                        .orElse(0)
         );
 
     }

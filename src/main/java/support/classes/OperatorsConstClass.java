@@ -10,6 +10,11 @@ import java.util.stream.Stream;
 public class OperatorsConstClass {
     public static final String SPACE_STRING = " ";
     public static final String EMPTY_STRING = "";
+    public static final String OPEN_ROUND_BRACKET = "(";
+    public static final String CLOSE_ROUND_BRACKET = ")";
+    public static final String OPEN_FIGURE_BRACKET = "{";
+    public static final String CLOSE_FIGURE_BRACKET = "}";
+
 
     public static final List<String> OPERATORS_KEYWORDS_LIST = Arrays.asList(
             "abstract",
@@ -66,10 +71,10 @@ public class OperatorsConstClass {
     );
 
     public static final List<String> OPERATORS_SEPARATORS_LIST = Arrays.asList(
-            "(",
-            ")",
-            "{",
-            "}",
+            OPEN_ROUND_BRACKET,
+            CLOSE_ROUND_BRACKET,
+            OPEN_FIGURE_BRACKET,
+            CLOSE_FIGURE_BRACKET,
             "[",
             "]",
             ";",

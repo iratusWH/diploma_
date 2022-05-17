@@ -12,7 +12,8 @@ public enum MetricNameEnum {
     DEPTH_OF_INHERITANCE_METRIC("Depth of Inheritance Metric"),
     HALSTEAD_METRICS("Halstead Metrics"),
     MAINTAINABILITY_INDEX_METRIC("Maintainability Index Metric"),
-    LINES_OF_CODE_METRIC("Lines of code");
+    LINES_OF_CODE_METRIC("Lines of code"),
+    BRACKET_CHECK("Bracket Check");
 
     final String name;
 }

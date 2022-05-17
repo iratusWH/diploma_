@@ -1,8 +1,10 @@
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.CouplingBetweenObjectsMetricProcessing;
-//import metrics.classes.CyclomaticComplexityMetricProcessing;
-import metrics.classes.DepthOfInheritanceTreeMetricProcessing;
-import metrics.classes.HalsteadMetricsProcessing;
+//import metrics.classes.processingMetrics.CyclomaticComplexityMetricProcessing;
+import metrics.classes.processingMetrics.CyclomaticComplexityMetricProcessing;
+import metrics.classes.processingMetrics.HalsteadMetricsProcessing;
+import metrics.classes.processingMetrics.LOCMetricsProcessing;
+import metrics.classes.processingMetrics.MaintainabilityIndexMetricProcessing;
+import metrics.classes.text.checks.BracketsCheck;
 import support.classes.ResourceFiles;
 
 @Slf4j
@@ -11,24 +13,32 @@ public class Main {
 
         ResourceFiles resourceFiles = new ResourceFiles("/home/xela/IdeaProjects/diploma");
 
-//        CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
 //        CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
-        HalsteadMetricsProcessing hmMetric = new HalsteadMetricsProcessing();
 //        DepthOfInheritanceTreeMetricProcessing ditMetric = new DepthOfInheritanceTreeMetricProcessing();
+//        CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
+//        HalsteadMetricsProcessing hmMetric = new HalsteadMetricsProcessing();
+//        LOCMetricsProcessing locMetric = new LOCMetricsProcessing();
+        BracketsCheck bracketsCheck = new BracketsCheck();
+
         resourceFiles.filterFileList();
 
         resourceFiles.getFilteredFileList()
                 .forEach(
                         file -> {
+                            bracketsCheck.setFile(file);
+                            bracketsCheck.processMetric();
+                            log.info("BracketsCheck: {} ", bracketsCheck.getHTMLComponent());
 //                            ccMetric.setFile(file);
 //                            ccMetric.processMetric();
-//                            ccMetric.printMetric();
-
-                            hmMetric.setFile(file);
-                            hmMetric.processMetric();
-//                            hmMetric.getHTMLComponent();
-
-
+//
+//                            hmMetric.setFile(file);
+//                            hmMetric.processMetric();
+//
+//                            locMetric.setFile(file);
+//                            locMetric.processMetric();
+//
+//                            MaintainabilityIndexMetricProcessing miMetric = new MaintainabilityIndexMetricProcessing(ccMetric, hmMetric, locMetric);
+//                            miMetric.processMetric();
 //                            cboMetric.setFile(file);
 //                            cboMetric.processMetric();
 //                            cboMetric.printMetric();
