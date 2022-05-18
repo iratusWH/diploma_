@@ -40,7 +40,6 @@ public class BracketsCheck extends MetricProcessingImpl {
         } catch (Exception e) {
             log.error("BracketsCheck error - {}", e.getMessage());
         }
-        ;
     }
 
     private List<Statement> getAllStatementsWithFigureBrackets(CompilationUnit compilationUnit) {
@@ -54,8 +53,8 @@ public class BracketsCheck extends MetricProcessingImpl {
         return statementsList;
     }
 
-    private boolean isEqualHomePosition(Position position) {
-        return Position.HOME.equals(position);
+    private boolean isNotEqualHomePosition(Position otherPosition) {
+        return !Position.HOME.equals(otherPosition);
     }
 
     private Position findMissingFigureBracket(Statement startStatement) {
@@ -77,7 +76,7 @@ public class BracketsCheck extends MetricProcessingImpl {
             statementPosition = getPosition(nextToken);
         } while (!currentToken.equals(CLOSE_ROUND_BRACKET));
 
-        int tokenSpreadCount = 10;
+        int tokenSpreadCount = 4;
         do {
             nextToken = nextToken.map(JavaToken::getNextToken)
                     .filter(Optional::isPresent)
@@ -90,7 +89,7 @@ public class BracketsCheck extends MetricProcessingImpl {
             --tokenSpreadCount;
         } while (!currentToken.equals(OPEN_FIGURE_BRACKET) || tokenSpreadCount > 0);
 
-        return tokenSpreadCount == 0 ? statementPosition : Position.HOME;
+        return tokenSpreadCount <= 0 ? statementPosition : Position.HOME;
     }
 
 
@@ -105,8 +104,8 @@ public class BracketsCheck extends MetricProcessingImpl {
     private String formatPositionToString(List<Position> missingFigureBracketsList) {
         return String.join("\n",
                 missingFigureBracketsList.stream()
-                        .filter(this::isEqualHomePosition)
-                        .map(Position::toString)
+                        .filter(this::isNotEqualHomePosition)
+                        .map(pos -> String.format("(line=%s; column=%s)", pos.line, pos.column))
                         .toList()
         );
     }
