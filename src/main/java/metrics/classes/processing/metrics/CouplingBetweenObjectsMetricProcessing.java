@@ -1,4 +1,4 @@
-package metrics.classes.processingMetrics;
+package metrics.classes.processing.metrics;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -22,7 +22,7 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
 
     private List<Name> imports;
 
-    public CouplingBetweenObjectsMetricProcessing(){
+    public CouplingBetweenObjectsMetricProcessing() {
         setMetricName(MetricNameEnum.COUPLING_BETWEEN_OBJECTS_METRIC);
     }
 
@@ -40,13 +40,14 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
         }
     }
 
-    private void addNotStandardImports(CompilationUnit compilationUnit){
-        compilationUnit.getImports().forEach(imp0rt -> {
-            if (!imp0rt.getNameAsString().contains("java.")) imports.add(imp0rt.getName());
-        });
+    private void addNotStandardImports(CompilationUnit compilationUnit) {
+        compilationUnit.getImports().forEach(imp -> {
+                    if (!imp.getNameAsString().contains("java.")) imports.add(imp.getName());
+                }
+        );
     }
 
-    private void distinctImports(){
+    private void distinctImports() {
         Set<Name> distinctImports = new HashSet<>(imports);
         imports = distinctImports.stream().toList();
         log.info("CBO imports: {}", distinctImports);

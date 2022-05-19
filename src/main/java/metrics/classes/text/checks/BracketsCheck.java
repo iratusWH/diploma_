@@ -1,23 +1,27 @@
 package metrics.classes.text.checks;
 
-import com.github.javaparser.*;
+import com.github.javaparser.JavaToken;
+import com.github.javaparser.Position;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.stmt.*;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
+import org.apache.commons.lang3.StringUtils;
 import support.classes.MetricNameEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Stack;
 
 import static support.classes.OperatorsConstClass.*;
 
 @Slf4j
 public class BracketsCheck extends MetricProcessingImpl {
 
-    public static final String OK_MESSAGE = "OK";
+    private static final String OK_MESSAGE = "OK";
 
     public BracketsCheck() {
         setMetricName(MetricNameEnum.BRACKET_CHECK);
@@ -58,12 +62,12 @@ public class BracketsCheck extends MetricProcessingImpl {
     }
 
     private Position findMissingFigureBracket(Statement startStatement) {
-        Position statementPosition;
 
         Optional<JavaToken> nextToken = startStatement.getTokenRange()
                 .map(TokenRange::getBegin);
 
         String currentToken;
+        Stack<Integer> bracketsStack = new Stack<>();
         do {
             nextToken = nextToken.map(JavaToken::getNextToken)
                     .filter(Optional::isPresent)
@@ -73,11 +77,16 @@ public class BracketsCheck extends MetricProcessingImpl {
                     .map(JavaToken::getText)
                     .orElseThrow();
 
-            statementPosition = getPosition(nextToken);
-        } while (!currentToken.equals(CLOSE_ROUND_BRACKET));
+        } while (!currentToken.equals(OPEN_ROUND_BRACKET));
 
-        int tokenSpreadCount = 4;
         do {
+            if (OPEN_BRACKETS_LIST.contains(currentToken)) {
+                bracketsStack.push(OPEN_BRACKETS_LIST.indexOf(currentToken));
+            }
+            if (CLOSE_BRACKETS_LIST.contains(currentToken) && (bracketsStack.peek() == CLOSE_BRACKETS_LIST.indexOf(currentToken))) {
+                bracketsStack.pop();
+            }
+
             nextToken = nextToken.map(JavaToken::getNextToken)
                     .filter(Optional::isPresent)
                     .map(Optional::get);
@@ -86,10 +95,21 @@ public class BracketsCheck extends MetricProcessingImpl {
                     .map(JavaToken::getText)
                     .orElseThrow();
 
-            --tokenSpreadCount;
-        } while (!currentToken.equals(OPEN_FIGURE_BRACKET) || tokenSpreadCount > 0);
+        } while (!bracketsStack.isEmpty());
 
-        return tokenSpreadCount <= 0 ? statementPosition : Position.HOME;
+        Position statementPosition = getPosition(nextToken);
+        int statementCount = 7;
+        do{
+            nextToken = getNextNotEmptyToken(nextToken);
+
+            currentToken = nextToken
+                    .map(JavaToken::getText)
+                    .orElseThrow();
+
+            --statementCount;
+        } while (!currentToken.equals(OPEN_FIGURE_BRACKET) && statementCount > 0);
+
+        return currentToken.equals(OPEN_FIGURE_BRACKET) ? Position.HOME : statementPosition;
     }
 
 
@@ -99,6 +119,18 @@ public class BracketsCheck extends MetricProcessingImpl {
                 .map(Optional::orElseThrow)
                 .map(range -> range.begin)
                 .orElseThrow();
+    }
+
+    private Optional<JavaToken> getNextNotEmptyToken(Optional<JavaToken> token){
+        String tokenText;
+        do {
+            token = token.map(JavaToken::getNextToken)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get);
+
+            tokenText = token.map(JavaToken::getText).orElseThrow();
+        } while (tokenText.equals(StringUtils.EMPTY));
+        return token;
     }
 
     private String formatPositionToString(List<Position> missingFigureBracketsList) {

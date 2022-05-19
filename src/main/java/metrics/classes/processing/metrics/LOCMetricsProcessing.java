@@ -1,4 +1,4 @@
-package metrics.classes.processingMetrics;
+package metrics.classes.processing.metrics;
 
 import com.github.javaparser.Range;
 import com.github.javaparser.StaticJavaParser;

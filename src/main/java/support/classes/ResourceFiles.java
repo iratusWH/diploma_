@@ -28,16 +28,13 @@ public class ResourceFiles {
     private List<File> filteredFileList;
     private CompilationUnit compilationUnit;
 
-    public ResourceFiles(String projectPath){
+    public ResourceFiles(String projectPath) {
         this.projectPath = projectPath;
         setFileListByDirectory(projectPath);
     }
 
-    public File getFileByName(String fileName){
-        return fileList.stream()
-                .filter(file -> fileName.equalsIgnoreCase(file.getName()))
-                .findFirst()
-                .orElseThrow();
+    public File getFileByName(String fileName) {
+        return fileList.stream().filter(file -> fileName.equalsIgnoreCase(file.getName())).findFirst().orElseThrow();
     }
 
     public void setFileListByDirectory(String startDirectory) {
@@ -51,8 +48,8 @@ public class ResourceFiles {
         File directoryFile;
         boolean isNotEndOfDirectories = true;
 
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(startDirectoryPath)){
-                    directoryStream.forEach(directoryList::add);
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(startDirectoryPath)) {
+            directoryStream.forEach(directoryList::add);
         } catch (IOException ignored) {
             log.error("ToolBox -> dirList(startDirectory): Error while getting directories");
         }
@@ -61,11 +58,7 @@ public class ResourceFiles {
             for (Path filePath : directoryList) {
 
                 try {
-                    directoryFile = Optional.of(filePath)
-                            .map(Path::toFile)
-                            .orElseThrow(
-                                    FileNotFoundException::new
-                            );
+                    directoryFile = Optional.of(filePath).map(Path::toFile).orElseThrow(FileNotFoundException::new);
 
                     // предполагается, что файл с расширением ".java" является Java файлом
                     if (directoryFile.toString().toLowerCase(Locale.ROOT).contains(".java")) {
@@ -74,17 +67,9 @@ public class ResourceFiles {
 
                     // если файл является директорией, то записываем его в лист директорий
                     if (directoryFile.isDirectory()) {
-                        directorySecondList.addAll(
-                                Arrays.stream(
-                                                Objects.requireNonNull(
-                                                        filePath.toFile()
-                                                                .listFiles())
-                                        )
-                                        .map(File::toPath)
-                                        .toList()
-                        );
+                        directorySecondList.addAll(Arrays.stream(Objects.requireNonNull(filePath.toFile().listFiles())).map(File::toPath).toList());
                     }
-                } catch (FileNotFoundException fileNotFoundException){
+                } catch (FileNotFoundException fileNotFoundException) {
                     log.error("Invalid file: ", fileNotFoundException);
                 }
             }
@@ -101,14 +86,12 @@ public class ResourceFiles {
     }
 
     public void filterFileList() {
-        List<File> filteredList = getFileList().stream()
-                .filter(this::isFileClass)
-                .toList();
+        List<File> filteredList = getFileList().stream().filter(this::isFileClass).toList();
 
         setFilteredFileList(filteredList);
     }
 
-    private boolean isFileClass(File file){
+    private boolean isFileClass(File file) {
         try {
             return isClassFile(StaticJavaParser.parse(file));
         } catch (FileNotFoundException e) {
@@ -117,13 +100,11 @@ public class ResourceFiles {
         return false;
     }
 
-    private boolean isClassFile(CompilationUnit compilationUnit){
-        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class,
-                        element -> !isEnumInterfaceOrRecordDeclaration(element))
-                .isPresent();
+    private boolean isClassFile(CompilationUnit compilationUnit) {
+        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, element -> !isEnumInterfaceOrRecordDeclaration(element)).isPresent();
     }
 
-    private boolean isEnumInterfaceOrRecordDeclaration(ClassOrInterfaceDeclaration declaration){
+    private boolean isEnumInterfaceOrRecordDeclaration(ClassOrInterfaceDeclaration declaration) {
         return declaration.isEnumDeclaration() || declaration.isInterface() || declaration.isEnumConstantDeclaration() || declaration.isRecordDeclaration();
     }
 

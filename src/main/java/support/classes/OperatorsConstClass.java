@@ -1,10 +1,8 @@
 package support.classes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OperatorsConstClass {
@@ -70,13 +68,18 @@ public class OperatorsConstClass {
             "null"
     );
 
-    public static final List<String> OPERATORS_SEPARATORS_LIST = Arrays.asList(
+    public static final List<String> OPEN_BRACKETS_LIST = Arrays.asList(
             OPEN_ROUND_BRACKET,
-            CLOSE_ROUND_BRACKET,
             OPEN_FIGURE_BRACKET,
+            "[");
+
+    public static final List<String> CLOSE_BRACKETS_LIST = Arrays.asList(
+            CLOSE_ROUND_BRACKET,
             CLOSE_FIGURE_BRACKET,
-            "[",
-            "]",
+            "]");
+
+
+    public static final List<String> OTHER_OPERATORS_LIST = Arrays.asList(
             ";",
             ",",
             ".",
@@ -84,6 +87,13 @@ public class OperatorsConstClass {
             "@",
             "::"
     );
+
+    public static final List<String> OPERATORS_SEPARATORS_LIST = Stream.of(
+                    OPEN_BRACKETS_LIST,
+                    CLOSE_BRACKETS_LIST,
+                    OTHER_OPERATORS_LIST)
+            .flatMap(Collection::stream)
+            .toList();
 
     public static final List<String> OPERATORS_LIST = Arrays.asList(
             "=",

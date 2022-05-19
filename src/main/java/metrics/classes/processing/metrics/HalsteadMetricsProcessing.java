@@ -1,4 +1,4 @@
-package metrics.classes.processingMetrics;
+package metrics.classes.processing.metrics;
 
 import com.github.javaparser.*;
 import com.github.javaparser.ast.CompilationUnit;

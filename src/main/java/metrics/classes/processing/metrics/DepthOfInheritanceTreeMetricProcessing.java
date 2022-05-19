@@ -1,4 +1,4 @@
-package metrics.classes.processingMetrics;
+package metrics.classes.processing.metrics;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -24,7 +24,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
     private Map<String, Integer> depthOfInheritance;
     private String className;
 
-    public DepthOfInheritanceTreeMetricProcessing(){
+    public DepthOfInheritanceTreeMetricProcessing() {
         setMetricName(MetricNameEnum.DEPTH_OF_INHERITANCE_METRIC);
     }
 
@@ -42,13 +42,13 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
     }
 
-    public int searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException{
+    public int searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException {
         int depth = 0;
         int tempDepth;
         for (File classFile : classFiles) {
             tempDepth = visitor(classFile);
             log.info("File - {}; Inheritance tree - {}", classFile.getName(), tempDepth);
-            if (tempDepth > depth){
+            if (tempDepth > depth) {
                 depth = tempDepth;
                 className = classFile.getPath();
             }
@@ -61,15 +61,15 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         compilationUnit = StaticJavaParser.parse(classFile);
 
         ClassOrInterfaceDeclaration clazz = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow();
-        String className = clazz.getNameAsString();
-        depthOfInheritance.put(className, 0);
+        String classFileName = clazz.getNameAsString();
+        depthOfInheritance.put(classFileName, 0);
 
         if (clazz.getExtendedTypes().isEmpty()) {
-            depthOfInheritance.put(className, 0);
+            depthOfInheritance.put(classFileName, 0);
             return 0;
         }
         if (depthOfInheritance.containsKey(clazz.getExtendedTypes().toString())) {
-            return depthOfInheritance.get(className) + 1;
+            return depthOfInheritance.get(classFileName) + 1;
         }
 
         String parent = clazz.getExtendedTypes().stream().findFirst()

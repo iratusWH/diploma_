@@ -1,4 +1,4 @@
-package metrics.classes.processingMetrics;
+package metrics.classes.processing.metrics;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,14 +14,27 @@ import java.util.List;
 @Slf4j
 public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
 
-    private final CyclomaticComplexityMetricProcessing cyclomaticComplexityMetric;
-    private final HalsteadMetricsProcessing halsteadMetricsProcessing;
-    private final LOCMetricsProcessing locMetricsProcessing;
+    private CyclomaticComplexityMetricProcessing cyclomaticComplexityMetric;
+    private HalsteadMetricsProcessing halsteadMetricsProcessing;
+    private LOCMetricsProcessing locMetricsProcessing;
 
     public MaintainabilityIndexMetricProcessing(CyclomaticComplexityMetricProcessing outerCyclomaticComplexity,
                                                 HalsteadMetricsProcessing outerHalsteadMetric,
                                                 LOCMetricsProcessing outerLOCMetric) {
         setMetricName(MetricNameEnum.MAINTAINABILITY_INDEX_METRIC);
+
+        cyclomaticComplexityMetric = outerCyclomaticComplexity;
+        halsteadMetricsProcessing = outerHalsteadMetric;
+        locMetricsProcessing = outerLOCMetric;
+    }
+
+    public MaintainabilityIndexMetricProcessing() {
+        setMetricName(MetricNameEnum.MAINTAINABILITY_INDEX_METRIC);
+    }
+
+    public void setMetrics(CyclomaticComplexityMetricProcessing outerCyclomaticComplexity,
+                           HalsteadMetricsProcessing outerHalsteadMetric,
+                           LOCMetricsProcessing outerLOCMetric){
 
         cyclomaticComplexityMetric = outerCyclomaticComplexity;
         halsteadMetricsProcessing = outerHalsteadMetric;
