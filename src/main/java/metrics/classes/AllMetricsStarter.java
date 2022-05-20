@@ -11,16 +11,23 @@ import java.io.File;
 public class AllMetricsStarter {
     ResourceFiles resourceFiles;
 
-    private static final CouplingBetweenObjectsMetricProcessing cboMetric = new CouplingBetweenObjectsMetricProcessing();
-    private static final DepthOfInheritanceTreeMetricProcessing ditMetric = new DepthOfInheritanceTreeMetricProcessing();
-    private static final CyclomaticComplexityMetricProcessing ccMetric = new CyclomaticComplexityMetricProcessing();
-    private static final HalsteadMetricsProcessing hmMetric = new HalsteadMetricsProcessing();
-    private static final LOCMetricsProcessing locMetric = new LOCMetricsProcessing();
-    private static final BracketsCheck bracketsCheck = new BracketsCheck();
-    private static final MaintainabilityIndexMetricProcessing miMetric = new MaintainabilityIndexMetricProcessing();
+    private final CouplingBetweenObjectsMetricProcessing cboMetric;
+    private final DepthOfInheritanceTreeMetricProcessing ditMetric;
+    private final CyclomaticComplexityMetricProcessing ccMetric;
+    private final HalsteadMetricsProcessing hmMetric;
+    private final LOCMetricsProcessing locMetric;
+    private final BracketsCheck bracketsCheck;
+    private final MaintainabilityIndexMetricProcessing miMetric;
 
     private AllMetricsStarter(String fullProjectPath){
         resourceFiles = new ResourceFiles(fullProjectPath);
+        cboMetric = new CouplingBetweenObjectsMetricProcessing();
+        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
+        ccMetric = new CyclomaticComplexityMetricProcessing();
+        hmMetric = new HalsteadMetricsProcessing();
+        locMetric = new LOCMetricsProcessing();
+        bracketsCheck = new BracketsCheck();
+        miMetric = new MaintainabilityIndexMetricProcessing();
     }
 
     public static AllMetricsStarter getStarter(String fullProjectPath){
@@ -29,6 +36,7 @@ public class AllMetricsStarter {
 
     public void execute(){
         resourceFiles.filterFileList();
+        
         resourceFiles.getFilteredFileList().forEach(this::doSimpleMetrics);
         doComplexMetrics(resourceFiles);
     }
@@ -40,6 +48,8 @@ public class AllMetricsStarter {
     }
 
     private void doSimpleMetrics(File file){
+        log.info("File: {}", file.getPath());
+
         bracketsCheck.setFile(file);
         bracketsCheck.processMetric();
         log.info("BracketsCheck: {} ", bracketsCheck.getHTMLComponent());
@@ -56,6 +66,7 @@ public class AllMetricsStarter {
         locMetric.processMetric();
         log.info("LOCMetricsProcessing: {} ", ccMetric.getHTMLComponent());
 
+        miMetric.setFile(file);
         miMetric.setMetrics(ccMetric, hmMetric, locMetric);
         miMetric.processMetric();
         log.info("MaintainabilityIndexMetricProcessing: {}", miMetric.getHTMLComponent());
