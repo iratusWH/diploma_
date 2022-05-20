@@ -7,6 +7,7 @@ import support.classes.HTMLComponent;
 import support.classes.MetricNameEnum;
 
 import java.io.File;
+import java.util.Objects;
 
 @Slf4j
 @Data
@@ -23,9 +24,16 @@ public abstract class MetricProcessingImpl implements MetricProcessing {
 
     @Override
     public HTMLComponent getHTMLComponent() {
-        return HTMLComponent.builder().metric(metric.toString())
+        if (Objects.nonNull(file)) {
+            return HTMLComponent.builder()
+                    .metric(metric.toString())
+                    .metricName(metricName)
+                    .directoryAndFileName(file.getPath())
+                    .build();
+        }
+        return HTMLComponent.builder()
+                .metric(metric.toString())
                 .metricName(metricName)
-                .directoryAndFileName(file.getPath())
                 .build();
     }
 }
