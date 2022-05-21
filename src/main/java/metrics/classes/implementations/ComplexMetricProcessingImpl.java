@@ -19,11 +19,6 @@ public abstract class ComplexMetricProcessingImpl implements MetricProcessing {
     private String fileName;
 
     @Override
-    public void printMetric() {
-        log.info(metric.toString());
-    }
-
-    @Override
     public HTMLComponent getHTMLComponent(){
         return HTMLComponent.builder()
                 .metric(metric.toString())

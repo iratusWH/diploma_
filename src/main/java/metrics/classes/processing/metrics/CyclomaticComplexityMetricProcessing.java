@@ -11,6 +11,7 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.WhileStmt;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 import support.classes.MetricNameEnum;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
 public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {

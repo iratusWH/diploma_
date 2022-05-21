@@ -18,11 +18,6 @@ public abstract class MetricProcessingImpl implements MetricProcessing {
     private File file;
 
     @Override
-    public void printMetric() {
-        log.info(metric.toString());
-    }
-
-    @Override
     public HTMLComponent getHTMLComponent() {
         if (Objects.nonNull(file)) {
             return HTMLComponent.builder()

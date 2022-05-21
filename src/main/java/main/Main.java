@@ -1,7 +1,7 @@
+package main;
+
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.AllMetricsStarter;
-
-import java.util.Objects;
 
 @Slf4j
 public class Main {

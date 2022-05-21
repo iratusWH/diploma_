@@ -11,10 +11,7 @@ import metrics.classes.implementations.MetricProcessingImpl;
 import org.apache.commons.lang3.StringUtils;
 import support.classes.MetricNameEnum;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
 import static support.classes.OperatorsConstClass.*;
 
@@ -67,7 +64,7 @@ public class BracketsCheck extends MetricProcessingImpl {
                 .map(TokenRange::getBegin);
 
         String currentToken;
-        Stack<Integer> bracketsStack = new Stack<>();
+        Deque<Integer> bracketsStack = new ArrayDeque<>();
         do {
             nextToken = nextToken.map(JavaToken::getNextToken)
                     .filter(Optional::isPresent)
@@ -83,7 +80,9 @@ public class BracketsCheck extends MetricProcessingImpl {
             if (OPEN_BRACKETS_LIST.contains(currentToken)) {
                 bracketsStack.push(OPEN_BRACKETS_LIST.indexOf(currentToken));
             }
-            if (CLOSE_BRACKETS_LIST.contains(currentToken) && (bracketsStack.peek() == CLOSE_BRACKETS_LIST.indexOf(currentToken))) {
+            if (CLOSE_BRACKETS_LIST.contains(currentToken)
+                    && (Objects.nonNull(bracketsStack.peek()))
+                    && (bracketsStack.peek() == CLOSE_BRACKETS_LIST.indexOf(currentToken))) {
                 bracketsStack.pop();
             }
 
@@ -99,7 +98,7 @@ public class BracketsCheck extends MetricProcessingImpl {
 
         Position statementPosition = getPosition(nextToken);
         int statementCount = 7;
-        do{
+        do {
             nextToken = getNextNotEmptyToken(nextToken);
 
             currentToken = nextToken
@@ -121,7 +120,7 @@ public class BracketsCheck extends MetricProcessingImpl {
                 .orElseThrow();
     }
 
-    private Optional<JavaToken> getNextNotEmptyToken(Optional<JavaToken> token){
+    private Optional<JavaToken> getNextNotEmptyToken(Optional<JavaToken> token) {
         String tokenText;
         do {
             token = token.map(JavaToken::getNextToken)
