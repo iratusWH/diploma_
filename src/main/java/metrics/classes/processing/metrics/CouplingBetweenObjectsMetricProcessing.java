@@ -50,6 +50,5 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
     private void distinctImports() {
         Set<Name> distinctImports = new HashSet<>(imports);
         imports = distinctImports.stream().toList();
-        log.info("CBO imports: {}", distinctImports);
     }
 }

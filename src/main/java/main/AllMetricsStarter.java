@@ -94,8 +94,7 @@ public class AllMetricsStarter {
 
     private void printMetric(MetricProcessing metric){
         printDelimiter();
-        log.info("{}: {}", metric.getClass().getSimpleName(), metric.getMetric());
-        printDelimiter();
+        log.info("{}: {}", metric.getClass().getSimpleName(), metric.getHTMLComponent());
     }
 
     private void printDelimiter(){
