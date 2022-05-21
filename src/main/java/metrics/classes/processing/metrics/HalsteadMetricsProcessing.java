@@ -109,30 +109,24 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         processProgramEffort();
     }
 
-    private long getAndSaveTotalOperators() {
+    private void getAndSaveTotalOperators() {
         allOperatorsList = new ArrayList<>();
         allLexemes.forEach(this::setOperators);
         totalOperators = allOperatorsList.size() + totalQuotes;
-
-        return totalOperators;
     }
 
-    private long getAndSaveTotalOperands() {
+    private void getAndSaveTotalOperands() {
         allOperandsList = new ArrayList<>(allLexemes);
         allOperandsList.removeAll(allOperatorsList);
         totalOperands = allOperandsList.size();
-
-        return totalOperands;
     }
 
-    private long getAndSaveDistinctOperators() {
+    private void getAndSaveDistinctOperators() {
         distinctOperators = getAllOperatorsList().stream().distinct().count() + (getTotalOperators() >= 1 ? 1 : 0);
-        return distinctOperators;
     }
 
-    private long getAndSaveDistinctOperands() {
+    private void getAndSaveDistinctOperands() {
         distinctOperands = getAllOperandsList().stream().distinct().count();
-        return distinctOperands;
     }
 
     private void processProgramVocabulary() {

@@ -45,6 +45,8 @@ public class AllMetricsStarter {
         resourceFiles.getFilteredFileList().forEach(this::doSimpleMetrics);
 
         doComplexMetrics(resourceFiles);
+
+
     }
 
     private void doComplexMetrics(ResourceFiles resourceFiles) {
@@ -97,6 +99,6 @@ public class AllMetricsStarter {
     }
 
     private void printDelimiter(){
-        log.info("=".repeat(30));
+        log.info("=".repeat(50));
     }
 }

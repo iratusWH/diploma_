@@ -18,16 +18,6 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
     private HalsteadMetricsProcessing halsteadMetricsProcessing;
     private LOCMetricsProcessing locMetricsProcessing;
 
-    public MaintainabilityIndexMetricProcessing(CyclomaticComplexityMetricProcessing outerCyclomaticComplexity,
-                                                HalsteadMetricsProcessing outerHalsteadMetric,
-                                                LOCMetricsProcessing outerLOCMetric) {
-        setMetricName(MetricNameEnum.MAINTAINABILITY_INDEX_METRIC);
-
-        cyclomaticComplexityMetric = outerCyclomaticComplexity;
-        halsteadMetricsProcessing = outerHalsteadMetric;
-        locMetricsProcessing = outerLOCMetric;
-    }
-
     public MaintainabilityIndexMetricProcessing() {
         setMetricName(MetricNameEnum.MAINTAINABILITY_INDEX_METRIC);
     }

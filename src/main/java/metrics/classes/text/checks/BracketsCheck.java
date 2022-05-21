@@ -33,8 +33,9 @@ public class BracketsCheck extends MetricProcessingImpl {
             String missingFigureBracketString = OK_MESSAGE;
             if (!allStatements.isEmpty()) {
                 List<Position> missingFigureBracketsList = allStatements.stream().map(this::findMissingFigureBracket).toList();
-                if (!missingFigureBracketsList.isEmpty())
+                if (!missingFigureBracketsList.isEmpty()) {
                     missingFigureBracketString = formatPositionToString(missingFigureBracketsList);
+                }
             }
 
             setMetric(missingFigureBracketString);
@@ -136,7 +137,8 @@ public class BracketsCheck extends MetricProcessingImpl {
         return String.join("\n",
                 missingFigureBracketsList.stream()
                         .filter(this::isNotEqualHomePosition)
-                        .map(pos -> String.format("(line=%s; column=%s)", pos.line, pos.column))
+                        .map(Position::toString)
+                        .filter(pos -> !StringUtils.EMPTY.equals(pos))
                         .toList()
         );
     }
