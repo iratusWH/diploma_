@@ -2,7 +2,6 @@ package metrics.classes.implementations;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import metrics.interfaces.MetricProcessing;
 import metrics.interfaces.SimpleMetricProcessing;
 import support.classes.HTMLComponent;
 import support.classes.MetricNameEnum;

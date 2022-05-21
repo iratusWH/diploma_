@@ -22,6 +22,12 @@ import static support.classes.OperatorsConstClass.*;
 @Slf4j
 public class HalsteadMetricsProcessing extends MetricProcessingImpl {
 
+    private static final String RESULT_TEMPLATE =
+            "total: operators - %s, operands - %s; \n"
+            + "distinct: operators - %s, operands - %s; \n"
+            + "vocabulary - %s, length - %s, volume - %s; \n"
+            + "difficult - %s, effort - %s;";
+
     private List<String> allLexemes;
     private List<String> allOperatorsList;
     private List<String> allOperandsList;
@@ -58,11 +64,8 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
             setAllLexemes(compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(), compilationUnit.getRange().orElseThrow());
 
             processAllHalsteadMetrics();
-            log.info("file name - {}: ", getFile().getName());
-            log.info("total: operators - {}, operands - {}", getTotalOperators(), getTotalOperands());
-            log.info("distinct: operators - {}, operands - {}", getDistinctOperators(), getDistinctOperands());
-            log.info("vocabulary - {}, length - {}, volume - {}", getVocabulary(), getProgramLength(), getVolume());
-            log.info("difficult - {}, effort - {}", getDifficulty(), getEffort());
+            setMetric(getFormattedResult());
+
         } catch (FileNotFoundException e) {
             log.error("HalsteadMetricsProcessing Error - {}", e.getMessage());
         }
@@ -168,6 +171,20 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         return tokenRange.getRange()
                 .orElseThrow()
                 .end;
+    }
+
+    private String getFormattedResult(){
+        return String.format(RESULT_TEMPLATE,
+                getTotalOperators(),
+                getTotalOperands(),
+                getDistinctOperators(),
+                getDistinctOperands(),
+                getVocabulary(),
+                getProgramLength(),
+                getVolume(),
+                getDifficulty(),
+                getEffort()
+        );
     }
 
 }

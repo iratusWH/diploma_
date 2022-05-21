@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 import org.apache.commons.lang3.StringUtils;
+import support.classes.MetricNameEnum;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
     private static final String CLASS_PROBLEM = "Classes or interfaces aren't comply with conventions: ";
     private static final String CONST_PROBLEM = "Constants aren't comply with conventions: ";
     private static final String VARIABLE_PROBLEM = "Variables aren't comply with conventions: ";
+    private static final String FORMATTING_TEMPLATE = "Variable: %s; Position: %s";
+
+    public ClassComplyWithConvention() {
+        setMetricName(MetricNameEnum.CLASS_COMPLY_WITH_CONVENTION);
+    }
 
     @Override
     public void processMetric() {
@@ -93,13 +99,12 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
     }
 
     private String formatVariableDeclaration(FieldDeclaration declaration) {
-        String formattingPattern = "Variable: %s; Position: %s";
         String declarationName = declaration.getVariable(0).getNameAsString();
         String declarationPosition = declaration.getVariable(0).getBegin()
                 .map(Position::toString)
                 .orElse(StringUtils.EMPTY);
 
-        return String.format(formattingPattern, declarationName, declarationPosition);
+        return String.format(FORMATTING_TEMPLATE, declarationName, declarationPosition);
     }
 
     private boolean isNotStaticVariable(FieldDeclaration declaration) {

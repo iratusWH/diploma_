@@ -1,7 +1,6 @@
-package metrics.classes;
+package main;
 
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
 import metrics.classes.processing.metrics.*;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithConvention;
@@ -10,7 +9,6 @@ import metrics.interfaces.SimpleMetricProcessing;
 import support.classes.ResourceFiles;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,15 +50,13 @@ public class AllMetricsStarter {
     private void doComplexMetrics(ResourceFiles resourceFiles) {
         ditMetric.setFileList(resourceFiles);
         ditMetric.processMetric();
-        log.info("DepthOfInheritanceTreeMetricProcessing: {}", ditMetric.getHTMLComponent());
+        printMetric(ditMetric);
     }
 
     private void doSimpleMetrics(File file) {
         log.info("File: {}", file.getPath());
         metricList.forEach(metric -> doMetricFabric(file, metric));
         doMaintainabilityMetric(file, metricList);
-
-        log.info("MaintainabilityIndexMetricProcessing: {}", miMetric.getHTMLComponent());
     }
 
     private void doMaintainabilityMetric(File file, List<SimpleMetricProcessing> metricList){
@@ -94,7 +90,13 @@ public class AllMetricsStarter {
         metric.processMetric();
     }
 
-    private void printMetric(SimpleMetricProcessing metric){
-        log.info("{}: {}", metric.getClass().getName(), metric.getMetric());
+    private void printMetric(MetricProcessing metric){
+        printDelimiter();
+        log.info("{}: {}", metric.getClass().getSimpleName(), metric.getMetric());
+        printDelimiter();
+    }
+
+    private void printDelimiter(){
+        log.info("=".repeat(30));
     }
 }
