@@ -1,51 +1,55 @@
 package metrics.classes;
 
 import lombok.extern.slf4j.Slf4j;
+import metrics.classes.implementations.MetricProcessingImpl;
 import metrics.classes.processing.metrics.*;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithConvention;
+import metrics.interfaces.MetricProcessing;
+import metrics.interfaces.SimpleMetricProcessing;
 import support.classes.ResourceFiles;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 public class AllMetricsStarter {
     ResourceFiles resourceFiles;
 
-    private final CouplingBetweenObjectsMetricProcessing cboMetric;
+    private final List<SimpleMetricProcessing> metricList;
     private final DepthOfInheritanceTreeMetricProcessing ditMetric;
-    private final CyclomaticComplexityMetricProcessing ccMetric;
-    private final HalsteadMetricsProcessing hmMetric;
-    private final LOCMetricsProcessing locMetric;
-    private final BracketsCheck bracketsCheck;
     private final MaintainabilityIndexMetricProcessing miMetric;
-    private final ClassComplyWithConvention complyWithConventionCheck;
 
-    private AllMetricsStarter(String fullProjectPath){
+    private AllMetricsStarter(String fullProjectPath) {
         resourceFiles = new ResourceFiles(fullProjectPath);
-        cboMetric = new CouplingBetweenObjectsMetricProcessing();
-        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
-        ccMetric = new CyclomaticComplexityMetricProcessing();
-        hmMetric = new HalsteadMetricsProcessing();
-        locMetric = new LOCMetricsProcessing();
-        bracketsCheck = new BracketsCheck();
+
+        metricList = Arrays.asList(
+                new CouplingBetweenObjectsMetricProcessing(),
+                new CyclomaticComplexityMetricProcessing(),
+                new HalsteadMetricsProcessing(),
+                new LOCMetricsProcessing(),
+                new BracketsCheck(),
+                new ClassComplyWithConvention()
+        );
+
         miMetric = new MaintainabilityIndexMetricProcessing();
-        complyWithConventionCheck = new ClassComplyWithConvention();
+        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
     }
 
-    public static AllMetricsStarter getStarter(String fullProjectPath){
+    public static AllMetricsStarter getStarter(String fullProjectPath) {
         return new AllMetricsStarter(fullProjectPath);
     }
 
-    public void execute(){
+    public void execute() {
         resourceFiles.filterFileList();
-        
         resourceFiles.getFilteredFileList().forEach(this::doSimpleMetrics);
+
         doComplexMetrics(resourceFiles);
     }
 
-    private void doComplexMetrics(ResourceFiles resourceFiles){
+    private void doComplexMetrics(ResourceFiles resourceFiles) {
         ditMetric.setFileList(resourceFiles);
         ditMetric.processMetric();
         log.info("DepthOfInheritanceTreeMetricProcessing: {}", ditMetric.getHTMLComponent());
@@ -53,40 +57,44 @@ public class AllMetricsStarter {
 
     private void doSimpleMetrics(File file) {
         log.info("File: {}", file.getPath());
+        metricList.forEach(metric -> doMetricFabric(file, metric));
+        doMaintainabilityMetric(file, metricList);
 
-//        bracketsCheck.setFile(file);
-//        bracketsCheck.processMetric();
-//        log.info("BracketsCheck: {} ", bracketsCheck.getHTMLComponent());
-//
-//        ccMetric.setFile(file);
-//        ccMetric.processMetric();
-//        log.info("CyclomaticComplexityMetricProcessing: {} ", ccMetric.getHTMLComponent());
-//
-//        hmMetric.setFile(file);
-//        hmMetric.processMetric();
-//        log.info("HalsteadMetricsProcessing: {} ", ccMetric.getHTMLComponent());
-//
-//        locMetric.setFile(file);
-//        locMetric.processMetric();
-//        log.info("LOCMetricsProcessing: {} ", ccMetric.getHTMLComponent());
-//
-//        miMetric.setFile(file);
-//        miMetric.setMetrics(ccMetric, hmMetric, locMetric);
-//        miMetric.processMetric();
-//        log.info("MaintainabilityIndexMetricProcessing: {}", miMetric.getHTMLComponent());
-//
-//        cboMetric.setFile(file);
-//        cboMetric.processMetric();
-//        cboMetric.printMetric();
-//        log.info("CouplingBetweenObjectsMetricProcessing: {}", cboMetric.getHTMLComponent());
-//
-        try {
-            complyWithConventionCheck.setFile(file);
-            complyWithConventionCheck.processMetric();
-            log.info("ClassComplyWithConvention: {}", complyWithConventionCheck.getHTMLComponent());
-        } catch (Exception e){
-            log.error("Error: {}", e);
-        }
+        log.info("MaintainabilityIndexMetricProcessing: {}", miMetric.getHTMLComponent());
+    }
 
+    private void doMaintainabilityMetric(File file, List<SimpleMetricProcessing> metricList){
+        CyclomaticComplexityMetricProcessing ccMetric = (CyclomaticComplexityMetricProcessing) metricList.stream()
+                .filter(CyclomaticComplexityMetricProcessing.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+
+        HalsteadMetricsProcessing hmMetric = (HalsteadMetricsProcessing) metricList.stream()
+                .filter(HalsteadMetricsProcessing.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+
+        LOCMetricsProcessing locMetric = (LOCMetricsProcessing) metricList.stream()
+                .filter(LOCMetricsProcessing.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+
+        miMetric.setMetrics(ccMetric, hmMetric, locMetric);
+        setUpMetric(file, miMetric);
+        printMetric(miMetric);
+    }
+
+    private void doMetricFabric(File file, SimpleMetricProcessing metricClass) {
+        setUpMetric(file, metricClass);
+        printMetric(metricClass);
+    }
+
+    private void setUpMetric(File file, SimpleMetricProcessing metric){
+        metric.setFile(file);
+        metric.processMetric();
+    }
+
+    private void printMetric(SimpleMetricProcessing metric){
+        log.info("{}: {}", metric.getClass().getName(), metric.getMetric());
     }
 }

@@ -27,7 +27,7 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
     private static final String VARIABLE_PROBLEM = "Variables aren't comply with conventions: ";
 
     @Override
-    public void processMetric() throws FileNotFoundException {
+    public void processMetric() {
         try {
             CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
             List<String> listOfMismatch = new ArrayList<>();

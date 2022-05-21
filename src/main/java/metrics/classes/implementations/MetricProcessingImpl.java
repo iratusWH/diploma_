@@ -3,6 +3,7 @@ package metrics.classes.implementations;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import metrics.interfaces.MetricProcessing;
+import metrics.interfaces.SimpleMetricProcessing;
 import support.classes.HTMLComponent;
 import support.classes.MetricNameEnum;
 
@@ -11,7 +12,7 @@ import java.util.Objects;
 
 @Slf4j
 @Data
-public abstract class MetricProcessingImpl implements MetricProcessing {
+public abstract class MetricProcessingImpl implements SimpleMetricProcessing {
 
     private Object metric;
     private MetricNameEnum metricName;
