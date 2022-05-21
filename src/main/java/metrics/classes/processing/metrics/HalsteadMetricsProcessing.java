@@ -25,8 +25,8 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
     private static final String RESULT_TEMPLATE =
             "total: operators - %s, operands - %s; \n"
             + "distinct: operators - %s, operands - %s; \n"
-            + "vocabulary - %s, length - %s, volume - %s; \n"
-            + "difficult - %s, effort - %s;";
+            + "vocabulary - %s, length - %s, volume - %.2f; \n"
+            + "difficult - %.2f, effort - %.2f;";
 
     private List<String> allLexemes;
     private List<String> allOperatorsList;
@@ -51,10 +51,6 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
 
     public HalsteadMetricsProcessing() {
         setMetricName(MetricNameEnum.HALSTEAD_METRICS);
-        distinctOperands = 0;
-        distinctOperators = 0;
-        totalOperands = 0;
-        totalOperators = 0;
     }
 
     @Override

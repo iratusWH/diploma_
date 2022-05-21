@@ -44,9 +44,6 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
     @Override
     public void processMetric() {
         double metric = (171.0 - 5.2 * Math.log(halsteadMetricsProcessing.getVocabulary()) - 0.23 * getMaxCyclomaticComplexity() - 16.2 * Math.log(getLOC())) * 100.0 / 171.0;
-
-        log.info("MaintainabilityIndexMetricProcessing: metric - {}", metric);
-
         setMetric(metric);
     }
 

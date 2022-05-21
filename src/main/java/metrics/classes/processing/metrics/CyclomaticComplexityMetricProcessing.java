@@ -26,8 +26,6 @@ import java.util.Map;
 @Data
 public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
-    private static final String CYCLOMATIC_COMPLEXITY = "Cyclomatic Complexity Metric";
-
     private List<ClassOrInterfaceDeclaration> classDeclaration;
     private Map<String, Integer> methodNamesWithOperatorsCount;
 
@@ -57,13 +55,20 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                     )
             );
 
-        setMetric(methodNamesWithOperatorsCount);
+        setMetric(
+                formatMapToString(methodNamesWithOperatorsCount)
+        );
 
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("Error file not find {}", getMetricName());
         }
     }
 
+    private String formatMapToString(Map<String, Integer> resultMap){
+        return resultMap.toString()
+                .replace("{", "")
+                .replace("}", "");
+    }
 
 
 }

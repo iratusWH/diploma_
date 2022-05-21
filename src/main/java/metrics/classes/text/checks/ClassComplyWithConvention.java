@@ -11,7 +11,6 @@ import metrics.classes.implementations.MetricProcessingImpl;
 import org.apache.commons.lang3.StringUtils;
 import support.classes.MetricNameEnum;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
