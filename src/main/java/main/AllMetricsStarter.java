@@ -12,6 +12,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * AllMetricsStarter - class which starts the factory initializing the metrics objects
+ */
 @Slf4j
 public class AllMetricsStarter {
     ResourceFiles resourceFiles;
@@ -45,8 +48,6 @@ public class AllMetricsStarter {
         resourceFiles.getFilteredFileList().forEach(this::doSimpleMetrics);
 
         doComplexMetrics(resourceFiles);
-
-
     }
 
     private void doComplexMetrics(ResourceFiles resourceFiles) {
@@ -94,7 +95,7 @@ public class AllMetricsStarter {
 
     private void printMetric(MetricProcessing metric){
         printDelimiter();
-        log.info("{}: {}", metric.getClass().getSimpleName(), metric.getHTMLComponent());
+        log.info("{}: {}", metric.getClass().getSimpleName(), metric.getMetric());
     }
 
     private void printDelimiter(){

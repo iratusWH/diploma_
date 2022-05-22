@@ -47,7 +47,6 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         int tempDepth;
         for (File classFile : classFiles) {
             tempDepth = visitor(classFile);
-            log.info("File - {}; Inheritance tree - {}", classFile.getName(), tempDepth);
             if (tempDepth > depth) {
                 depth = tempDepth;
                 className = classFile.getPath();

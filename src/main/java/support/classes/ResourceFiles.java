@@ -34,7 +34,10 @@ public class ResourceFiles {
     }
 
     public File getFileByName(String fileName) {
-        return fileList.stream().filter(file -> fileName.equalsIgnoreCase(file.getName())).findFirst().orElseThrow();
+        return fileList.stream()
+                .filter(file -> fileName.equalsIgnoreCase(file.getName()))
+                .findFirst()
+                .orElseThrow();
     }
 
     public void setFileListByDirectory(String startDirectory) {
@@ -51,7 +54,7 @@ public class ResourceFiles {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(startDirectoryPath)) {
             directoryStream.forEach(directoryList::add);
         } catch (IOException ignored) {
-            log.error("ToolBox -> dirList(startDirectory): Error while getting directories");
+            log.error("setFileListByDirectory: Error while getting directories");
         }
 
         while (isNotEndOfDirectories) {
@@ -67,7 +70,11 @@ public class ResourceFiles {
 
                     // если файл является директорией, то записываем его в лист директорий
                     if (directoryFile.isDirectory()) {
-                        directorySecondList.addAll(Arrays.stream(Objects.requireNonNull(filePath.toFile().listFiles())).map(File::toPath).toList());
+                        directorySecondList.addAll(
+                                Arrays.stream(Objects.requireNonNull(filePath.toFile().listFiles()))
+                                .map(File::toPath)
+                                .toList()
+                        );
                     }
                 } catch (FileNotFoundException fileNotFoundException) {
                     log.error("Invalid file: ", fileNotFoundException);

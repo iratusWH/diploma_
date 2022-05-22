@@ -38,7 +38,9 @@ public class BracketsCheck extends MetricProcessingImpl {
                 }
             }
 
-            setMetric(missingFigureBracketString);
+            setMetric(
+                    "".equals(missingFigureBracketString.trim()) ? OK_MESSAGE : missingFigureBracketString
+            );
         } catch (Exception e) {
             log.error("BracketsCheck error - {}", e.getMessage());
         }

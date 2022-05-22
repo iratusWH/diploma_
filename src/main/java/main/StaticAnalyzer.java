@@ -2,8 +2,13 @@ package main;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Main class which starts program
+ *
+ * @author Markelov Alexandr A-07-18
+ */
 @Slf4j
-public class Main {
+public class StaticAnalyzer {
     public static void main(String[] args) {
         log.info("Starting program");
         if (args.length != 0) {

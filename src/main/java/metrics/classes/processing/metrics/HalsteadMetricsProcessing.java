@@ -26,7 +26,7 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
             "total: operators - %s, operands - %s; \n"
             + "distinct: operators - %s, operands - %s; \n"
             + "vocabulary - %s, length - %s, volume - %.2f; \n"
-            + "difficult - %.2f, effort - %.2f;";
+            + "difficult - %.2f, effort - %.2f, programming time - %.2f s;";
 
     private List<String> allLexemes;
     private List<String> allOperatorsList;
@@ -45,6 +45,7 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
     private double volume;
     private double difficulty;
     private double effort;
+    private double programmingTime;
 
     // Support metric
     private long totalQuotes;
@@ -107,6 +108,7 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         processProgramVolume();
         processProgramDifficulty();
         processProgramEffort();
+        processProgrammingTime();
     }
 
     private void getAndSaveTotalOperators() {
@@ -149,8 +151,12 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         setEffort(getDifficulty() * getVolume());
     }
 
+    private void processProgrammingTime(){
+        setProgrammingTime(getEffort() / (60.0 * 18.0));
+    }
+
     private boolean isClosedBrackets(String lexeme) {
-        return "}".equals(lexeme) || ")".equals(lexeme) || "]".equals(lexeme);
+        return CLOSE_FIGURE_BRACKET.equals(lexeme) || CLOSE_ROUND_BRACKET.equals(lexeme) || "]".equals(lexeme);
     }
 
     void setOperators(String lex) {
@@ -173,7 +179,8 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
                 getProgramLength(),
                 getVolume(),
                 getDifficulty(),
-                getEffort()
+                getEffort(),
+                getProgrammingTime()
         );
     }
 
