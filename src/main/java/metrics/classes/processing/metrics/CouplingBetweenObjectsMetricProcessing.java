@@ -2,6 +2,7 @@ package metrics.classes.processing.metrics;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
@@ -29,26 +31,17 @@ public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl
     @Override
     public void processMetric() {
         try {
-            imports = new ArrayList<>();
             CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
 
-            addNotStandardImports(compilationUnit);
-            distinctImports();
+            imports = compilationUnit.getImports()
+                    .stream().filter(imp -> !imp.getNameAsString().contains("java."))
+                    .map(ImportDeclaration::getName)
+                    .distinct()
+                    .toList();
+
             setMetric(String.valueOf(imports.size()));
         } catch (FileNotFoundException fileNotFoundException) {
-            log.error("File isn't find");
+            log.error("File hasn't find");
         }
-    }
-
-    private void addNotStandardImports(CompilationUnit compilationUnit) {
-        compilationUnit.getImports().forEach(imp -> {
-                    if (!imp.getNameAsString().contains("java.")) imports.add(imp.getName());
-                }
-        );
-    }
-
-    private void distinctImports() {
-        Set<Name> distinctImports = new HashSet<>(imports);
-        imports = distinctImports.stream().toList();
     }
 }

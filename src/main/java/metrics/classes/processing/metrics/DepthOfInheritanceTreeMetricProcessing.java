@@ -22,7 +22,6 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
     private int maxDepth;
     private Map<String, Integer> depthOfInheritance;
-    private String className;
 
     public DepthOfInheritanceTreeMetricProcessing() {
         setMetricName(MetricNameEnum.DEPTH_OF_INHERITANCE_METRIC);
@@ -38,7 +37,6 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File not found!");
         }
-
     }
 
     public int searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException {
@@ -48,7 +46,6 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
             tempDepth = visitor(classFile);
             if (tempDepth > depth) {
                 depth = tempDepth;
-                className = classFile.getPath();
             }
         }
         return depth;
@@ -60,7 +57,6 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
         ClassOrInterfaceDeclaration clazz = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow();
         String classFileName = clazz.getNameAsString();
-        depthOfInheritance.put(classFileName, 0);
 
         if (clazz.getExtendedTypes().isEmpty()) {
             depthOfInheritance.put(classFileName, 0);
@@ -77,7 +73,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         File parentClassFile = getFileList().getFileByName(parent + ".java");
 
         temporaryIndex = 1 + visitor(parentClassFile);
-        depthOfInheritance.put(parent, temporaryIndex);
+        depthOfInheritance.put(classFileName, temporaryIndex);
 
         return temporaryIndex;
     }

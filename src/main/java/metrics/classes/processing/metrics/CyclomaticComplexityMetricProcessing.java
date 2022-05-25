@@ -26,7 +26,6 @@ import java.util.Map;
 @Data
 public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
-    private List<ClassOrInterfaceDeclaration> classDeclaration;
     private Map<String, Integer> methodNamesWithOperatorsCount;
 
     public CyclomaticComplexityMetricProcessing(){
@@ -39,7 +38,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
             CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
 
             List<MethodDeclaration> methodDeclarationList = compilationUnit.findAll(MethodDeclaration.class);
-            classDeclaration = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
+            List<ClassOrInterfaceDeclaration> classDeclaration = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
             methodNamesWithOperatorsCount = new HashMap<>();
 
             methodDeclarationList.forEach(

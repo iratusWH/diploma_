@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
     }
 
     public Integer getMaxCyclomaticComplexity() {
-        List<Integer> cyclomaticComplexitiesOfCMethods = cyclomaticComplexityMetric.getMethodNamesWithOperatorsCount().values().stream().toList();
+        List<Integer> cyclomaticComplexitiesOfCMethods = new ArrayList<>(cyclomaticComplexityMetric.getMethodNamesWithOperatorsCount().values());
         if (cyclomaticComplexitiesOfCMethods.isEmpty())
             return 0;
 
