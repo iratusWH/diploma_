@@ -21,7 +21,7 @@ import java.util.Map;
 public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcessingImpl {
 
     private int maxDepth;
-    private Map<String, Integer> depthOfInheritance;
+    private Map<String, Integer> depthOfInheritanceMap;
 
     public DepthOfInheritanceTreeMetricProcessing() {
         setMetricName(MetricNameEnum.DEPTH_OF_INHERITANCE_METRIC);
@@ -29,7 +29,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
     @Override
     public void processMetric() {
-        depthOfInheritance = new HashMap<>();
+        depthOfInheritanceMap = new HashMap<>();
         getFileList().filterFileList();
         List<File> classFiles = getFileList().getFilteredFileList();
         try {
@@ -59,11 +59,11 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         String classFileName = clazz.getNameAsString();
 
         if (clazz.getExtendedTypes().isEmpty()) {
-            depthOfInheritance.put(classFileName, 0);
+            depthOfInheritanceMap.put(classFileName, 0);
             return 0;
         }
-        if (depthOfInheritance.containsKey(clazz.getExtendedTypes().toString())) {
-            return depthOfInheritance.get(classFileName) + 1;
+        if (depthOfInheritanceMap.containsKey(clazz.getExtendedTypes().toString())) {
+            return depthOfInheritanceMap.get(classFileName) + 1;
         }
 
         String parent = clazz.getExtendedTypes().stream().findFirst()
@@ -73,7 +73,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         File parentClassFile = getFileList().getFileByName(parent + ".java");
 
         temporaryIndex = 1 + visitor(parentClassFile);
-        depthOfInheritance.put(classFileName, temporaryIndex);
+        depthOfInheritanceMap.put(classFileName, temporaryIndex);
 
         return temporaryIndex;
     }
