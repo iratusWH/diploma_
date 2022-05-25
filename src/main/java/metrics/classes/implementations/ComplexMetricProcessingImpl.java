@@ -15,5 +15,4 @@ public abstract class ComplexMetricProcessingImpl implements MetricProcessing {
     private Object metric;
     private MetricNameEnum metricName;
     protected CompilationUnit compilationUnit;
-    private String fileName;
 }

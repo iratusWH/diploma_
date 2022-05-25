@@ -35,7 +35,6 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         List<File> classFiles = getFileList().getFilteredFileList();
         try {
             setMetric(String.valueOf(searchMaxDepthOfInheritance(classFiles)));
-            setFileName(className);
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File not found!");
         }

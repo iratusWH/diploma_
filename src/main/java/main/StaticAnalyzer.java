@@ -3,7 +3,7 @@ package main;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Main class which starts program
+ * Main class which starts static analyze
  *
  * @author Markelov Alexandr A-07-18
  */
