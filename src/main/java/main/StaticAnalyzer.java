@@ -3,9 +3,9 @@ package main;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Main class which starts static analyze
+ * Основной класс, запускающий анализ проекта
  *
- * @author Markelov Alexandr A-07-18
+ * @author Маркелов Александр A-07-18
  */
 @Slf4j
 public class StaticAnalyzer {
