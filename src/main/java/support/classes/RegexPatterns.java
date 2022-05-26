@@ -1,5 +1,8 @@
 package support.classes;
 
+/**
+ * Класс констант-шаблонов регулярных выражений
+ */
 public class RegexPatterns {
     private RegexPatterns(){}
 

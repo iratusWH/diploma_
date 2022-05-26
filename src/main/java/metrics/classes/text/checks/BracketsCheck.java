@@ -15,9 +15,14 @@ import java.util.*;
 
 import static support.classes.OperatorsConstClass.*;
 
+/**
+ * Класс проверки наличия фигурных скобок около операторов,
+ * которые подразумевают их наличие, однако не запрещают отсутствия скобок
+ */
 @Slf4j
 public class BracketsCheck extends MetricProcessingImpl {
 
+    // константа сообщения, которое сигнализирует о корректности класса
     private static final String OK_MESSAGE = "OK";
 
     public BracketsCheck() {
@@ -28,9 +33,12 @@ public class BracketsCheck extends MetricProcessingImpl {
     public void processMetric() {
         try {
             CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
-
+            // получение всех выражений подразумевающих наличие фигурных скобок
             List<Statement> allStatements = getAllStatementsWithFigureBrackets(compilationUnit);
             String missingFigureBracketString = OK_MESSAGE;
+
+            // проверяем на наличие выражений подразумевающих наличие фигурных скобок, ищем около этих выражений отсутствующие скобки
+            // записывая места обнаружения в список, затем преобразуя его к строке
             if (!allStatements.isEmpty()) {
                 List<Position> missingFigureBracketsList = allStatements.stream().map(this::findMissingFigureBracket).toList();
                 if (!missingFigureBracketsList.isEmpty()) {
@@ -38,6 +46,7 @@ public class BracketsCheck extends MetricProcessingImpl {
                 }
             }
 
+            // заполняем поле метрики получившимся результатом, используя вспомогательную функцию форматированного вывода
             setMetric(
                     "".equals(missingFigureBracketString.trim()) ? OK_MESSAGE : missingFigureBracketString
             );
@@ -46,6 +55,7 @@ public class BracketsCheck extends MetricProcessingImpl {
         }
     }
 
+    // получение всех выражений подразумевающих наличие фигурных скобок
     private List<Statement> getAllStatementsWithFigureBrackets(CompilationUnit compilationUnit) {
         List<Statement> statementsList = new ArrayList<>();
 
@@ -57,17 +67,20 @@ public class BracketsCheck extends MetricProcessingImpl {
         return statementsList;
     }
 
+    // проверка на соответствие изначальной позиции лексемы
     private boolean isNotEqualHomePosition(Position otherPosition) {
         return !Position.HOME.equals(otherPosition);
     }
 
+    // поиск отсутствующих фигурных скобок
     private Position findMissingFigureBracket(Statement startStatement) {
 
+        // получение следующей лексемы после выражения
         Optional<JavaToken> nextToken = startStatement.getTokenRange()
                 .map(TokenRange::getBegin);
-
         String currentToken;
-        Deque<Integer> bracketsStack = new ArrayDeque<>();
+
+        // поиск открывающей круглой скобки - окончания выражения
         do {
             nextToken = nextToken.map(JavaToken::getNextToken)
                     .filter(Optional::isPresent)
@@ -79,10 +92,16 @@ public class BracketsCheck extends MetricProcessingImpl {
 
         } while (!currentToken.equals(OPEN_ROUND_BRACKET));
 
+        // поиск окончания выражения
+        // с помощью дека происходит поиск окончания выражения
+        Deque<Integer> bracketsStack = new ArrayDeque<>();
         do {
+            // проверяем на соответствие текущей лексемы со списком открытых скобок
             if (OPEN_BRACKETS_LIST.contains(currentToken)) {
                 bracketsStack.push(OPEN_BRACKETS_LIST.indexOf(currentToken));
             }
+
+            // проверяем на соответствие текущей лексемы со списком закрытых скобок
             if (CLOSE_BRACKETS_LIST.contains(currentToken)
                     && (Objects.nonNull(bracketsStack.peek()))
                     && (bracketsStack.peek() == CLOSE_BRACKETS_LIST.indexOf(currentToken))) {
@@ -97,11 +116,16 @@ public class BracketsCheck extends MetricProcessingImpl {
                     .map(JavaToken::getText)
                     .orElseThrow();
 
-        } while (!bracketsStack.isEmpty());
+        } while (!bracketsStack.isEmpty()); // окончание произойдет если дэк опустеет,
+        // т.е. все выражения окажутся завершенными
 
+        // получаем позицию лексемы в коде
         Position statementPosition = getPosition(nextToken);
+
+        // максимальное число итераций
         int statementCount = 7;
         do {
+            // переход к не пустой лексеме
             nextToken = getNextNotEmptyToken(nextToken);
 
             currentToken = nextToken
@@ -109,12 +133,13 @@ public class BracketsCheck extends MetricProcessingImpl {
                     .orElseThrow();
 
             --statementCount;
-        } while (!currentToken.equals(OPEN_FIGURE_BRACKET) && statementCount > 0);
+        } while (!currentToken.equals(OPEN_FIGURE_BRACKET) && statementCount > 0); // выходим из цикла если находи открытую скобку
 
+        // если текущая лексема равна открытой скобке, то выводим нулевую позицию в коде, если нет выводим последнюю сохраненную позицию
         return currentToken.equals(OPEN_FIGURE_BRACKET) ? Position.HOME : statementPosition;
     }
 
-
+    // получение позиции лексемы
     private Position getPosition(Optional<JavaToken> token) {
         return token.map(JavaToken::getRange)
                 .filter(Optional::isPresent)
@@ -123,6 +148,7 @@ public class BracketsCheck extends MetricProcessingImpl {
                 .orElseThrow();
     }
 
+    // функция-фильтр пустых токенов
     private Optional<JavaToken> getNextNotEmptyToken(Optional<JavaToken> token) {
         String tokenText;
         do {
@@ -135,6 +161,7 @@ public class BracketsCheck extends MetricProcessingImpl {
         return token;
     }
 
+    // функция форматированного вывода
     private String formatPositionToString(List<Position> missingFigureBracketsList) {
         return String.join("\n",
                 missingFigureBracketsList.stream()

@@ -1,7 +1,12 @@
 package main;
 
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.processing.metrics.*;
+import metrics.classes.processing.metrics.CouplingBetweenObjectsMetricProcessing;
+import metrics.classes.processing.metrics.CyclomaticComplexityMetricProcessing;
+import metrics.classes.processing.metrics.DepthOfInheritanceTreeMetricProcessing;
+import metrics.classes.processing.metrics.HalsteadMetricsProcessing;
+import metrics.classes.processing.metrics.LOCMetricsProcessing;
+import metrics.classes.processing.metrics.MaintainabilityIndexMetricProcessing;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithConvention;
 import metrics.interfaces.MetricProcessing;
@@ -13,16 +18,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * AllMetricsStarter - class which starts the factory initializing the metrics objects
+ * AllMetricsStarter - класс запускающий все метрики по-очереди
  */
 @Slf4j
 public class AllMetricsStarter {
-    ResourceFiles resourceFiles;
+    ResourceFiles resourceFiles; // объект хранящий список файлов
 
-    private final List<SimpleMetricProcessing> metricList;
-    private final DepthOfInheritanceTreeMetricProcessing ditMetric;
-    private final MaintainabilityIndexMetricProcessing miMetric;
+    private final List<SimpleMetricProcessing> metricList; // список метрик, требующих на вход один файл
+    private final DepthOfInheritanceTreeMetricProcessing ditMetric; // метрика глубины дерева наследования
+    private final MaintainabilityIndexMetricProcessing miMetric; // метрика ремонтопригодности кода
 
+    // инициализация объектов метрик
     private AllMetricsStarter(String fullProjectPath) {
         resourceFiles = new ResourceFiles(fullProjectPath);
 
@@ -43,19 +49,23 @@ public class AllMetricsStarter {
         return new AllMetricsStarter(fullProjectPath);
     }
 
+    // запуск метрик
     public void execute() {
         resourceFiles.filterFileList();
-        resourceFiles.getFilteredFileList().forEach(this::doSimpleMetrics);
+        resourceFiles.getFilteredFileList()
+                .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
 
         doComplexMetrics(resourceFiles);
     }
 
+    // вычисление метрики требующей всю директорию файлов java
     private void doComplexMetrics(ResourceFiles resourceFiles) {
         ditMetric.setFileList(resourceFiles);
         ditMetric.processMetric();
         printMetric(ditMetric);
     }
 
+    // выполнение каждой метрики, которая требует один файл для анализа
     private void doSimpleMetrics(File file) {
         log.info("File: {}", file.getPath());
         metricList.forEach(metric -> doMetricFabric(file, metric));

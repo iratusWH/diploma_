@@ -3,6 +3,9 @@ package support.classes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Перечисление констант-названий метрик
+ */
 @Getter
 @RequiredArgsConstructor
 public enum MetricNameEnum {

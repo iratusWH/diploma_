@@ -11,35 +11,38 @@ import metrics.classes.implementations.MetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+/**
+ * Класс вычисления метрики связности между классами
+ * Допущение:
+ * В классе не должны присутствовать подобные импортируемый пакеты:
+ * lombok.*
+ */
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
 public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl {
 
-    private List<Name> imports;
+    private List<Name> imports; // лист импортируемых классов в исследуемом файле
 
     public CouplingBetweenObjectsMetricProcessing() {
-        setMetricName(MetricNameEnum.COUPLING_BETWEEN_OBJECTS_METRIC);
+        setMetricName(MetricNameEnum.COUPLING_BETWEEN_OBJECTS_METRIC); // ввод названия метрики
     }
 
     @Override
     public void processMetric() {
         try {
-            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
+            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile()); // разбор кода на составляющие для анализа
 
-            imports = compilationUnit.getImports()
-                    .stream().filter(imp -> !imp.getNameAsString().contains("java."))
-                    .map(ImportDeclaration::getName)
-                    .distinct()
+
+            imports = compilationUnit.getImports() // получение всех импортируемых классов
+                    .stream().filter(imp -> !imp.getNameAsString().contains("java.")) // фильтрация поставляемых с java классов
+                    .map(ImportDeclaration::getName) // получение имени импортируемого класса
+                    .distinct() // фильтрация повторяющихся классов
                     .toList();
 
-            setMetric(String.valueOf(imports.size()));
+            setMetric(String.valueOf(imports.size())); // вывод метрики
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File hasn't find");
         }

@@ -15,12 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static support.classes.RegexPatterns.*;
+import static support.classes.RegexPatterns.CLASS_OR_INTERFACE_DECLARATION_TEMPLATE;
+import static support.classes.RegexPatterns.CONST_DECLARATION_TEMPLATE;
+import static support.classes.RegexPatterns.VARIABLE_DECLARATION_TEMPLATE;
 
+/**
+ * Класс проверяющий исследуемый файл на соответствие конвенции о названии классов, переменных и констант в Java-программах
+ * Допущение: все переменные написаны с новой строки
+ * прим:
+ * int a;
+ * int b;
+ */
 @EqualsAndHashCode(callSuper = false)
 @Slf4j
 public class ClassComplyWithConvention extends MetricProcessingImpl {
 
+    // шаблоны вывода различных ошибок
     private static final String OK_MESSAGE = "OK";
     private static final String CLASS_PROBLEM = "Classes or interfaces aren't comply with conventions: ";
     private static final String CONST_PROBLEM = "Constants aren't comply with conventions: ";
@@ -37,6 +47,7 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
             CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
             List<String> listOfMismatch = new ArrayList<>();
 
+            // вызов функций поиска ошибочных названий
             findAndPutProblemClasses(listOfMismatch, compilationUnit);
             findAndPutProblemConstants(listOfMismatch, compilationUnit);
             findAndPutProblemVariables(listOfMismatch, compilationUnit);
@@ -47,6 +58,7 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
         }
     }
 
+    // поиск всех возможных ошибок при написании классов
     private void findAndPutProblemClasses(List<String> problemsList, CompilationUnit compilationUnit) {
         Pattern patternForClassOrInterface = Pattern.compile(CLASS_OR_INTERFACE_DECLARATION_TEMPLATE);
         List<String> classOrInterfaceList = compilationUnit.findAll(ClassOrInterfaceDeclaration.class)
@@ -62,6 +74,7 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
         }
     }
 
+    // поиск всех возможных ошибок при написании констант
     private void findAndPutProblemConstants(List<String> problemsList, CompilationUnit compilationUnit) {
         List<String> constantsList = compilationUnit.findAll(FieldDeclaration.class)
                 .stream()
@@ -76,6 +89,7 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
         }
     }
 
+    // поиск всех возможных ошибок при написании переменной
     private void findAndPutProblemVariables(List<String> problemsList, CompilationUnit compilationUnit) {
         List<String> variablesList = compilationUnit.findAll(FieldDeclaration.class)
                 .stream()
@@ -89,14 +103,19 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
         }
     }
 
+    // проверка на соответствие паттерну
     private boolean isNotVariableMatchPattern(FieldDeclaration declaration, String pattern) {
         Pattern patternForConst = Pattern.compile(pattern);
 
-        return !patternForConst.matcher(declaration.getVariable(0)
-                        .getNameAsString())
+        return !patternForConst
+                .matcher(
+                        declaration
+                                .getVariable(0)
+                                .getNameAsString())
                 .matches();
     }
 
+    // функция выводящая форматированную строку с ошибочной переменной и ее позицией в коде
     private String formatVariableDeclaration(FieldDeclaration declaration) {
         String declarationName = declaration.getVariable(0).getNameAsString();
         String declarationPosition = declaration.getVariable(0).getBegin()
@@ -106,6 +125,7 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
         return String.format(FORMATTING_TEMPLATE, declarationName, declarationPosition);
     }
 
+    // проверка на свойство переменной быть static - константой
     private boolean isNotStaticVariable(FieldDeclaration declaration) {
         return !declaration.isStatic();
     }

@@ -21,30 +21,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Класс вычисления метрики Цикломатической сложности
+ */
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
 public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
-    private Map<String, Integer> methodNamesWithOperatorsCount;
+    private Map<String, Integer> methodNamesWithOperatorsCount; // словарь методов и метрики цикломатической сложности
 
     public CyclomaticComplexityMetricProcessing(){
-        setMetricName(MetricNameEnum.CYCLOMATIC_COMPLEXITY_METRIC);
+        setMetricName(MetricNameEnum.CYCLOMATIC_COMPLEXITY_METRIC); // ввод названия метрики
     }
 
     @Override
     public void processMetric() {
         try {
-            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
+            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile()); // разбор кода на составляющие для анализа
 
-            List<MethodDeclaration> methodDeclarationList = compilationUnit.findAll(MethodDeclaration.class);
-            List<ClassOrInterfaceDeclaration> classDeclaration = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
-            methodNamesWithOperatorsCount = new HashMap<>();
+            List<MethodDeclaration> methodDeclarationList = compilationUnit.findAll(MethodDeclaration.class); // поиск всех деклараций методов в исследуемом классе
+            methodNamesWithOperatorsCount = new HashMap<>(); // инициализация словаря
 
-            methodDeclarationList.forEach(
+            methodDeclarationList.forEach( // для каждого метода кладем имя метода и кол-во операторов ветвления
                     method -> methodNamesWithOperatorsCount.put(
                             method.getNameAsString(),
-                            method.findAll(ForEachStmt.class).size()
+                            method.findAll(ForEachStmt.class).size() // подсчет всех операторов ветвления
                                     + method.findAll(ForStmt.class).size()
                                     + method.findAll(IfStmt.class).size()
                                     + method.findAll(DoStmt.class).size()
@@ -55,7 +57,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
             );
 
         setMetric(
-                formatMapToString(methodNamesWithOperatorsCount)
+                formatMapToString(methodNamesWithOperatorsCount) // вывод получившейся метрики
         );
 
         } catch (FileNotFoundException fileNotFoundException) {
@@ -63,6 +65,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
         }
     }
 
+    // метод убирающий скобки при приведении словаря к строке
     private String formatMapToString(Map<String, Integer> resultMap){
         return resultMap.toString()
                 .replace("{", "")

@@ -19,13 +19,16 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Вспомогательный класс хранящий в себе список файлов проекта
+ */
 @Slf4j
 @Data
 public class ResourceFiles {
 
-    private String projectPath;
-    private List<File> fileList;
-    private List<File> filteredFileList;
+    private String projectPath; // строка пути проекта
+    private List<File> fileList; // список всех файлов проекта
+    private List<File> filteredFileList; // отфильтрованный список java-классов
     private CompilationUnit compilationUnit;
 
     public ResourceFiles(String projectPath) {
@@ -33,13 +36,19 @@ public class ResourceFiles {
         setFileListByDirectory(projectPath);
     }
 
+    /**
+     * получение объекта класса File из строки-директории
+     */
     public File getFileByName(String fileName) {
         return fileList.stream()
                 .filter(file -> fileName.equalsIgnoreCase(file.getName()))
                 .findFirst()
-                .orElseThrow();
+                .orElse(null);
     }
 
+    /**
+     * установка списка файлов Java
+     */
     public void setFileListByDirectory(String startDirectory) {
         List<File> javaFilesList = new ArrayList<>();
         List<Path> directoryList = new ArrayList<>();
@@ -63,7 +72,7 @@ public class ResourceFiles {
                 try {
                     directoryFile = Optional.of(filePath).map(Path::toFile).orElseThrow(FileNotFoundException::new);
 
-                    // предполагается, что файл с расширением ".java" является Java файлом
+                    // предполагается, что файл с расширением ".java" является Java классом/интерфейсом/перечислением
                     if (directoryFile.toString().toLowerCase(Locale.ROOT).contains(".java")) {
                         javaFilesList.add(directoryFile);
                     }
@@ -92,25 +101,37 @@ public class ResourceFiles {
         fileList = javaFilesList;
     }
 
+    /**
+     * Фильтрация списка файлов
+     */
     public void filterFileList() {
-        List<File> filteredList = getFileList().stream().filter(this::isFileClass).toList();
+        List<File> filteredList = getFileList()
+                .stream()
+                .filter(this::isFileClass)
+                .toList();
 
         setFilteredFileList(filteredList);
     }
 
     private boolean isFileClass(File file) {
         try {
-            return isClassFile(StaticJavaParser.parse(file));
+            return isJavaClassFile(StaticJavaParser.parse(file));
         } catch (FileNotFoundException e) {
             log.error("ResourceFiles error while filtering list: ", e);
         }
         return false;
     }
 
-    private boolean isClassFile(CompilationUnit compilationUnit) {
+    /**
+     * Проверка на соответствие Java классам
+     */
+    private boolean isJavaClassFile(CompilationUnit compilationUnit) {
         return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, element -> !isEnumInterfaceOrRecordDeclaration(element)).isPresent();
     }
 
+    /**
+     * Проверка на соответствие перечисляемым типам Java
+     */
     private boolean isEnumInterfaceOrRecordDeclaration(ClassOrInterfaceDeclaration declaration) {
         return declaration.isEnumDeclaration() || declaration.isInterface() || declaration.isEnumConstantDeclaration() || declaration.isRecordDeclaration();
     }

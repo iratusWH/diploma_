@@ -14,36 +14,43 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+/**
+ * Класс вычисления максимальной глубины дерева наследования
+ */
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
 public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcessingImpl {
 
-    private int maxDepth;
-    private Map<String, Integer> depthOfInheritanceMap;
+    private int maxDepth; // максимальная глубина дерева наследования
+    private Map<String, Integer> depthOfInheritanceMap; // словарь имен классов и уровня наследования
 
     public DepthOfInheritanceTreeMetricProcessing() {
-        setMetricName(MetricNameEnum.DEPTH_OF_INHERITANCE_METRIC);
+        setMetricName(MetricNameEnum.DEPTH_OF_INHERITANCE_METRIC); // ввод названия метрики
     }
 
     @Override
     public void processMetric() {
         depthOfInheritanceMap = new HashMap<>();
-        getFileList().filterFileList();
-        List<File> classFiles = getFileList().getFilteredFileList();
+        getFileList().filterFileList(); // фильтрация листа с исследуемыми файлами, остаются только файлы содержащие классы
         try {
-            setMetric(String.valueOf(searchMaxDepthOfInheritance(classFiles)));
+            setMetric( // вывод метрики
+                    String.valueOf(
+                            searchMaxDepthOfInheritance(getFileList().getFilteredFileList()) // поиск максимальной глубины
+                    )
+            );
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File not found!");
         }
     }
 
     public int searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException {
-        int depth = 0;
-        int tempDepth;
+        int depth = 0; // максимальная глубина
+        int tempDepth; // временная глубина
         for (File classFile : classFiles) {
-            tempDepth = visitor(classFile);
+            tempDepth = visitClass(classFile); // находение глубины наследования текущего файла
             if (tempDepth > depth) {
                 depth = tempDepth;
             }
@@ -51,30 +58,33 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
         return depth;
     }
 
-    public int visitor(File classFile) throws FileNotFoundException {
+    public int visitClass(File classFile) throws FileNotFoundException {
         int temporaryIndex;
-        compilationUnit = StaticJavaParser.parse(classFile);
+        compilationUnit = StaticJavaParser.parse(classFile); // получаем разобранный файл для анализа
 
-        ClassOrInterfaceDeclaration clazz = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow();
-        String classFileName = clazz.getNameAsString();
+        ClassOrInterfaceDeclaration clazz = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(); // поиск первого входения класса в файле
+        String classFileName = clazz.getNameAsString(); // название класса
 
-        if (clazz.getExtendedTypes().isEmpty()) {
+        if (clazz.getExtendedTypes().isEmpty()) { // если после extends нет класса, то записываем нуль в словарь
             depthOfInheritanceMap.put(classFileName, 0);
             return 0;
         }
-        if (depthOfInheritanceMap.containsKey(clazz.getExtendedTypes().toString())) {
+        if (depthOfInheritanceMap.containsKey(clazz.getExtendedTypes().toString())) { // если в словаре уже есть класс-родитель, то добавляем 1 и кладем в словарь
             return depthOfInheritanceMap.get(classFileName) + 1;
         }
 
         String parent = clazz.getExtendedTypes().stream().findFirst()
                 .map(NodeWithSimpleName::getNameAsString)
-                .orElseThrow();
+                .orElseThrow(); // получение наименования класса-родителя
 
-        File parentClassFile = getFileList().getFileByName(parent + ".java");
+        File parentClassFile = getFileList().getFileByName(parent + ".java"); // поиск класса-родителя в листе
+        if (Objects.isNull(parentClassFile)) {
+            depthOfInheritanceMap.put(classFileName, 0); // если файла нет в директории
+            return 0;
+        }
 
-        temporaryIndex = 1 + visitor(parentClassFile);
+        temporaryIndex = 1 + visitClass(parentClassFile); // если файла есть в директории
         depthOfInheritanceMap.put(classFileName, temporaryIndex);
-
         return temporaryIndex;
     }
 }

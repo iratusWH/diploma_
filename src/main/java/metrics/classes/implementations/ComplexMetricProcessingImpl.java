@@ -7,12 +7,15 @@ import metrics.interfaces.MetricProcessing;
 import support.classes.MetricNameEnum;
 import support.classes.ResourceFiles;
 
+/**
+ * Класс сложной метрики, используется больше одного файла для вычисления
+ */
 @Slf4j
 @Data
 public abstract class ComplexMetricProcessingImpl implements MetricProcessing {
 
-    private ResourceFiles fileList;
-    private Object metric;
-    private MetricNameEnum metricName;
-    protected CompilationUnit compilationUnit;
+    private ResourceFiles fileList; // лист исследуемых файлов
+    private Object metric; // результат вычисления метрики
+    private MetricNameEnum metricName; // название метрики
+    protected CompilationUnit compilationUnit; // юнит для разбора кода на ликсемы вычисления метрик
 }

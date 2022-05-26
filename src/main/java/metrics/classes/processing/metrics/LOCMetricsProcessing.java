@@ -9,6 +9,9 @@ import support.classes.MetricNameEnum;
 
 import java.io.FileNotFoundException;
 
+/**
+ * Класс вычисляющий метрику количества строк программы в файле
+ */
 @Slf4j
 public class LOCMetricsProcessing extends MetricProcessingImpl {
 
@@ -25,6 +28,7 @@ public class LOCMetricsProcessing extends MetricProcessingImpl {
         }
     }
 
+    // вычисление метрики через свойство объекта Range
     private void evaluatingMetric() throws FileNotFoundException {
         CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
         setMetric(

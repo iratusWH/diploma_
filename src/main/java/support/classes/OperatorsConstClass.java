@@ -5,7 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Класс констант со различными видами скобок, спец-символов, ключевых слов и операторов Java
+ */
 public class OperatorsConstClass {
+
+    private OperatorsConstClass(){}
+
     public static final String SPACE_STRING = " ";
     public static final String EMPTY_STRING = "";
     public static final String OPEN_ROUND_BRACKET = "(";

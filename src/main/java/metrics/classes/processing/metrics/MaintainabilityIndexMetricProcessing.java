@@ -10,19 +10,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Класс вычисляющий метрику ремонтопригодности программного кода
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
 public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
 
-    private CyclomaticComplexityMetricProcessing cyclomaticComplexityMetric;
-    private HalsteadMetricsProcessing halsteadMetricsProcessing;
-    private LOCMetricsProcessing locMetricsProcessing;
+    private CyclomaticComplexityMetricProcessing cyclomaticComplexityMetric; // класс метрики цикломатической сложности кода
+    private HalsteadMetricsProcessing halsteadMetricsProcessing; // класс метрик Холстеда
+    private LOCMetricsProcessing locMetricsProcessing; // класс метрики количества строк кода
 
     public MaintainabilityIndexMetricProcessing() {
         setMetricName(MetricNameEnum.MAINTAINABILITY_INDEX_METRIC);
     }
 
+    // получение всех метрик, которые необходимы для расчетов
     public void setMetrics(CyclomaticComplexityMetricProcessing outerCyclomaticComplexity,
                            HalsteadMetricsProcessing outerHalsteadMetric,
                            LOCMetricsProcessing outerLOCMetric){
@@ -38,7 +42,8 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
         setMetric(metric);
     }
 
-    public Integer getMaxCyclomaticComplexity() {
+    // получение максимальной метрики цикломатической сложности функции из всех в исследуемом классе
+    private Integer getMaxCyclomaticComplexity() {
         List<Integer> cyclomaticComplexitiesOfCMethods = new ArrayList<>(cyclomaticComplexityMetric.getMethodNamesWithOperatorsCount().values());
         if (cyclomaticComplexitiesOfCMethods.isEmpty())
             return 0;
@@ -46,6 +51,7 @@ public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
         return Collections.max(cyclomaticComplexitiesOfCMethods);
     }
 
+    // получение метрики количества строк кода из класса метрики LOC
     public Integer getLOC() {
         return (Integer) locMetricsProcessing.getMetric();
     }
