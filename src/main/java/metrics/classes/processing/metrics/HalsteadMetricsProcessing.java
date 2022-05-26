@@ -113,10 +113,10 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
 
     // функция запуска подсчета метрик Холстеда
     private void processAllHalsteadMetrics() {
-        getAndSaveTotalOperators();
-        getAndSaveTotalOperands();
-        getAndSaveDistinctOperators();
-        getAndSaveDistinctOperands();
+        saveTotalOperators();
+        saveTotalOperands();
+        saveDistinctOperators();
+        saveDistinctOperands();
         processProgramVocabulary();
         processProgramLength();
         processProgramVolume();
@@ -126,27 +126,27 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
     }
 
     // подсчет всех операторов
-    private void getAndSaveTotalOperators() {
+    private void saveTotalOperators() {
         allOperatorsList = allLexemes.stream().filter(ALL_OPERATORS_LIST::contains).toList();
         setTotalOperators(allOperatorsList.size() + totalQuotes);
     }
 
     // подсчет всех операндов
-    private void getAndSaveTotalOperands() {
+    private void saveTotalOperands() {
         allOperandsList = new ArrayList<>(allLexemes);
         allOperandsList.removeAll(allOperatorsList);
         setTotalOperands(allOperandsList.size());
     }
 
     // подсчет уникальных операторов
-    private void getAndSaveDistinctOperators() {
+    private void saveDistinctOperators() {
         setDistinctOperators(getAllOperatorsList().stream()
                 .distinct()
                 .count() + (getTotalOperators() >= 1 ? 1 : 0));
     }
 
     // подсчет уникальных операндов
-    private void getAndSaveDistinctOperands() {
+    private void saveDistinctOperands() {
         setDistinctOperands(getAllOperandsList().stream()
                 .distinct()
                 .count()
