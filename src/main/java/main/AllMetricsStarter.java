@@ -51,11 +51,15 @@ public class AllMetricsStarter {
 
     // запуск метрик
     public void execute() {
-        resourceFiles.filterFileList();
-        resourceFiles.getFilteredFileList()
-                .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
+        if (!resourceFiles.getFileList().isEmpty()) {
+            resourceFiles.filterFileList();
+            resourceFiles.getFilteredFileList()
+                    .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
 
-        doComplexMetrics(resourceFiles);
+            doComplexMetrics(resourceFiles);
+        } else {
+            log.warn("Java classes not found!");
+        }
     }
 
     // вычисление метрики требующей всю директорию файлов java
@@ -67,6 +71,8 @@ public class AllMetricsStarter {
 
     // выполнение каждой метрики, которая требует один файл для анализа
     private void doSimpleMetrics(File file) {
+        printDelimiter();
+        printDelimiter();
         log.info("File: {}", file.getPath());
         metricList.forEach(metric -> doMetricFabric(file, metric));
         doMaintainabilityMetric(file, metricList);

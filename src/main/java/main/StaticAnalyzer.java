@@ -16,6 +16,8 @@ public class StaticAnalyzer {
 
             AllMetricsStarter starter = AllMetricsStarter.getStarter(args[0]);
             starter.execute();
+        } else {
+            log.info("Path to project not found!");
         }
         log.info("Exit program...");
     }
