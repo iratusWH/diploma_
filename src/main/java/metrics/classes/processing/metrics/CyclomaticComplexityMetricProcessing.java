@@ -31,7 +31,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
     private Map<String, Integer> methodNamesWithOperatorsCount; // словарь методов и метрики цикломатической сложности
 
-    public CyclomaticComplexityMetricProcessing(){
+    public CyclomaticComplexityMetricProcessing() {
         setMetricName(MetricNameEnum.CYCLOMATIC_COMPLEXITY_METRIC); // ввод названия метрики
     }
 
@@ -46,19 +46,21 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
             methodDeclarationList.forEach( // для каждого метода кладем имя метода и кол-во операторов ветвления
                     method -> methodNamesWithOperatorsCount.put(
                             method.getNameAsString(),
-                            method.findAll(ForEachStmt.class).size() // подсчет всех операторов ветвления
-                                    + method.findAll(ForStmt.class).size()
-                                    + method.findAll(IfStmt.class).size()
-                                    + method.findAll(DoStmt.class).size()
-                                    + method.findAll(SwitchEntry.class).size()
-                                    + method.findAll(WhileStmt.class).size()
-                                    + 1
+                            (int) (method.stream()
+                                    .filter(statement -> (statement instanceof ForEachStmt)
+                                            || (statement instanceof ForStmt)
+                                            || (statement instanceof IfStmt)
+                                            || (statement instanceof DoStmt)
+                                            || (statement instanceof SwitchEntry)
+                                            || (statement instanceof WhileStmt))
+                                    .count() + 1) // подсчет всех операторов ветвления
+
                     )
             );
 
-        setMetric(
-                formatMapToString(methodNamesWithOperatorsCount) // вывод получившейся метрики
-        );
+            setMetric(
+                    formatMapToString(methodNamesWithOperatorsCount) // вывод получившейся метрики
+            );
 
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("Error file not find {}", getMetricName());
@@ -66,7 +68,7 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
     }
 
     // метод убирающий скобки при приведении словаря к строке
-    private String formatMapToString(Map<String, Integer> resultMap){
+    private String formatMapToString(Map<String, Integer> resultMap) {
         return resultMap.toString()
                 .replace("{", "")
                 .replace("}", "");

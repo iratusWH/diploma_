@@ -41,6 +41,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
                             searchMaxDepthOfInheritance(getFileList().getFilteredFileList()) // поиск максимальной глубины
                     )
             );
+            log.info("{}", depthOfInheritanceMap);
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File not found!");
         }
@@ -70,7 +71,7 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
             return 0;
         }
         if (depthOfInheritanceMap.containsKey(clazz.getExtendedTypes().toString())) { // если в словаре уже есть класс-родитель, то добавляем 1 и кладем в словарь
-            return depthOfInheritanceMap.get(classFileName) + 1;
+            return depthOfInheritanceMap.get(clazz.getExtendedTypes().toString()) + 1;
         }
 
         String parent = clazz.getExtendedTypes().stream().findFirst()
@@ -79,8 +80,8 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
 
         File parentClassFile = getFileList().getFileByName(parent + ".java"); // поиск класса-родителя в листе
         if (Objects.isNull(parentClassFile)) {
-            depthOfInheritanceMap.put(classFileName, 0); // если файла нет в директории
-            return 0;
+            depthOfInheritanceMap.put(classFileName, 1); // если файла нет в директории
+            return 1;
         }
 
         temporaryIndex = 1 + visitClass(parentClassFile); // если файла есть в директории
