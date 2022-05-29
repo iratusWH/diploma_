@@ -1,12 +1,7 @@
 package main;
 
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.processing.metrics.CouplingBetweenObjectsMetricProcessing;
-import metrics.classes.processing.metrics.CyclomaticComplexityMetricProcessing;
-import metrics.classes.processing.metrics.DepthOfInheritanceTreeMetricProcessing;
-import metrics.classes.processing.metrics.HalsteadMetricsProcessing;
-import metrics.classes.processing.metrics.LOCMetricsProcessing;
-import metrics.classes.processing.metrics.MaintainabilityIndexMetricProcessing;
+import metrics.classes.processing.metrics.*;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithConvention;
 import metrics.interfaces.MetricProcessing;
@@ -37,12 +32,13 @@ public class AllMetricsStarter {
         resourceFiles = new ResourceFiles(fullProjectPath);
 
         metricList = Arrays.asList(
-                new CouplingBetweenObjectsMetricProcessing(),
-                new CyclomaticComplexityMetricProcessing(),
-                new HalsteadMetricsProcessing(),
-                new LOCMetricsProcessing(),
-                new BracketsCheck(),
-                new ClassComplyWithConvention()
+                //new CouplingBetweenObjectsMetricProcessing(),
+                //new CyclomaticComplexityMetricProcessing(),
+                //new HalsteadMetricsProcessing(),
+                //new LOCMetricsProcessing(),
+                //new BracketsCheck(),
+                //new ClassComplyWithConvention(),
+                new CyclesComplexityMetricProcessing()
         );
 
         miMetric = new MaintainabilityIndexMetricProcessing();
@@ -79,7 +75,7 @@ public class AllMetricsStarter {
         printDelimiter();
         log.info("File: {}", file.getPath());
         metricList.forEach(metric -> doMetricFabric(file, metric));
-        doMaintainabilityMetric(file, metricList);
+        //doMaintainabilityMetric(file, metricList);
     }
 
     private void doMaintainabilityMetric(File file, List<SimpleMetricProcessing> metricList){
