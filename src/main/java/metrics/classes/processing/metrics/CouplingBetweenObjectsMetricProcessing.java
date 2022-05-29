@@ -14,10 +14,14 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
+ * StaticAnalyzer
+ *
  * Класс вычисления метрики связности между классами
  * Допущение:
  * В классе не должны присутствовать подобные импортируемый пакеты:
  * lombok.*
+ *
+ * @author Маркелов Александр A-07-18
  */
 @EqualsAndHashCode(callSuper = true)
 @Slf4j

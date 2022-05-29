@@ -16,8 +16,12 @@ import java.util.*;
 import static support.classes.OperatorsConstClass.*;
 
 /**
+ * StaticAnalyzer
+ *
  * Класс проверки наличия фигурных скобок около операторов,
  * которые подразумевают их наличие, однако не запрещают отсутствия скобок
+ *
+ * @author Маркелов Александр A-07-18
  */
 @Slf4j
 public class BracketsCheck extends MetricProcessingImpl {

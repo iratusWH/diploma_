@@ -17,7 +17,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * StaticAnalyzer
+ *
  * Класс вычисления максимальной глубины дерева наследования
+ *
+ * @author Маркелов Александр A-07-18
  */
 @EqualsAndHashCode(callSuper = true)
 @Slf4j

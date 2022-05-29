@@ -2,14 +2,8 @@ package metrics.classes.processing.metrics;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.stmt.DoStmt;
-import com.github.javaparser.ast.stmt.ForEachStmt;
-import com.github.javaparser.ast.stmt.ForStmt;
-import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.SwitchEntry;
-import com.github.javaparser.ast.stmt.WhileStmt;
+import com.github.javaparser.ast.stmt.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +46,8 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
                                             || (statement instanceof IfStmt)
                                             || (statement instanceof DoStmt)
                                             || (statement instanceof SwitchEntry)
-                                            || (statement instanceof WhileStmt))
+                                            || (statement instanceof WhileStmt)
+                                            || (statement instanceof CatchClause))
                                     .count() + 1) // подсчет всех операторов ветвления
 
                     )
@@ -69,9 +64,12 @@ public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
 
     // метод убирающий скобки при приведении словаря к строке
     private String formatMapToString(Map<String, Integer> resultMap) {
-        return resultMap.toString()
-                .replace("{", "")
-                .replace("}", "");
+        if (!resultMap.isEmpty()) {
+            return resultMap.toString()
+                    .replace("{", "")
+                    .replace("}", "");
+        }
+        return "Java class hasn't a method declaration";
     }
 
 

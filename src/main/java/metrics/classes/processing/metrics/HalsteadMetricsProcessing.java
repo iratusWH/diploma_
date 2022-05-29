@@ -29,9 +29,12 @@ import static support.classes.OperatorsConstClass.ONE_LINE_COMMENT;
 import static support.classes.OperatorsConstClass.SPACE_STRING;
 
 /**
- * Класс вычисляющий метрики Холстеда
+ * StaticAnalyzer
  *
+ * Класс вычисляющий метрики Холстеда
  * импортированные файлы не идут в расчет, т.к. многие IDE сами способны подписывать их в соответствии с программой
+ *
+ * @author Маркелов Александр A-07-18
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

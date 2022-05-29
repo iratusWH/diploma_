@@ -18,7 +18,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * StaticAnalyzer
+ *
  * AllMetricsStarter - класс запускающий все метрики по-очереди
+ *
+ * @author Маркелов Александр A-07-18
  */
 @Slf4j
 public class AllMetricsStarter {

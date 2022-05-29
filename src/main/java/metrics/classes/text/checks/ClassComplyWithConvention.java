@@ -20,11 +20,15 @@ import static support.classes.RegexPatterns.CONST_DECLARATION_TEMPLATE;
 import static support.classes.RegexPatterns.VARIABLE_DECLARATION_TEMPLATE;
 
 /**
+ * StaticAnalyzer
+ *
  * Класс проверяющий исследуемый файл на соответствие конвенции о названии классов, переменных и констант в Java-программах
  * Допущение: все переменные написаны с новой строки
  * прим:
  * int a;
  * int b;
+ *
+ * @author Маркелов Александр A-07-18
  */
 @EqualsAndHashCode(callSuper = false)
 @Slf4j
