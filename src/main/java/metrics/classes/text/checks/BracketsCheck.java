@@ -2,7 +2,6 @@ package metrics.classes.text.checks;
 
 import com.github.javaparser.JavaToken;
 import com.github.javaparser.Position;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.stmt.*;
@@ -17,7 +16,7 @@ import static support.classes.OperatorsConstClass.*;
 
 /**
  * StaticAnalyzer
- *
+ * <p>
  * Класс проверки наличия фигурных скобок около операторов,
  * которые подразумевают их наличие, однако не запрещают отсутствия скобок
  *
@@ -35,28 +34,25 @@ public class BracketsCheck extends MetricProcessingImpl {
 
     @Override
     public void processMetric() {
-        try {
-            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
-            // получение всех выражений подразумевающих наличие фигурных скобок
-            List<Statement> allStatements = getAllStatementsWithFigureBrackets(compilationUnit);
-            String missingFigureBracketString = OK_MESSAGE;
 
-            // проверяем на наличие выражений подразумевающих наличие фигурных скобок, ищем около этих выражений отсутствующие скобки
-            // записывая места обнаружения в список, затем преобразуя его к строке
-            if (!allStatements.isEmpty()) {
-                List<Position> missingFigureBracketsList = allStatements.stream().map(this::findMissingFigureBracket).toList();
-                if (!missingFigureBracketsList.isEmpty()) {
-                    missingFigureBracketString = formatPositionToString(missingFigureBracketsList);
-                }
+        // получение всех выражений подразумевающих наличие фигурных скобок
+        List<Statement> allStatements = getAllStatementsWithFigureBrackets(getFile());
+        String missingFigureBracketString = OK_MESSAGE;
+
+        // проверяем на наличие выражений подразумевающих наличие фигурных скобок, ищем около этих выражений отсутствующие скобки
+        // записывая места обнаружения в список, затем преобразуя его к строке
+        if (!allStatements.isEmpty()) {
+            List<Position> missingFigureBracketsList = allStatements.stream().map(this::findMissingFigureBracket).toList();
+            if (!missingFigureBracketsList.isEmpty()) {
+                missingFigureBracketString = formatPositionToString(missingFigureBracketsList);
             }
-
-            // заполняем поле метрики получившимся результатом, используя вспомогательную функцию форматированного вывода
-            setMetric(
-                    "".equals(missingFigureBracketString.trim()) ? OK_MESSAGE : missingFigureBracketString
-            );
-        } catch (Exception e) {
-            log.error("BracketsCheck error - {}", e.getMessage());
         }
+
+        // заполняем поле метрики получившимся результатом, используя вспомогательную функцию форматированного вывода
+        setMetric(
+                "".equals(missingFigureBracketString.trim()) ? OK_MESSAGE : missingFigureBracketString
+        );
+
     }
 
     // получение всех выражений подразумевающих наличие фигурных скобок

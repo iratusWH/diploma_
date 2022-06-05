@@ -30,6 +30,7 @@ public class ResourceFiles {
     private List<File> fileList; // список всех файлов проекта
     private List<File> filteredFileList; // отфильтрованный список java-классов
     private CompilationUnit compilationUnit;
+    private List<CompilationUnit> compilationUnitList; // список подготовленных файлов
 
     public ResourceFiles(String projectPath) {
         this.projectPath = projectPath;
@@ -98,19 +99,34 @@ public class ResourceFiles {
             directorySecondList.clear();
         }
 
-        fileList = javaFilesList;
+        setFileList(javaFilesList);
+        filterFileList();
+        parseFileList();
     }
 
     /**
      * Фильтрация списка файлов
      */
     public void filterFileList() {
-        List<File> filteredList = getFileList()
+        setFilteredFileList(
+                getFileList()
                 .stream()
                 .filter(this::isFileClass)
-                .toList();
+                .toList()
+        );
+    }
 
-        setFilteredFileList(filteredList);
+    /**
+     * Подготовка списка файлов для анализа
+     */
+    public void parseFileList(){
+        setCompilationUnitList(
+                getFilteredFileList()
+                        .stream()
+                        .map(this::getParsedFile)
+                        .filter(Objects::nonNull)
+                        .toList()
+        );
     }
 
     private boolean isFileClass(File file) {
@@ -136,4 +152,13 @@ public class ResourceFiles {
         return declaration.isEnumDeclaration() || declaration.isInterface() || declaration.isEnumConstantDeclaration() || declaration.isRecordDeclaration();
     }
 
+    private CompilationUnit getParsedFile(File javaFile){
+        try {
+            return StaticJavaParser.parse(javaFile);
+        } catch (Exception e) {
+            log.error("Cannot parse file: {}", javaFile.getName());
+        }
+
+        return null;
+    }
 }

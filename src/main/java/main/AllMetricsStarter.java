@@ -1,5 +1,9 @@
 package main;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.expr.Name;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.processing.metrics.CouplingBetweenObjectsMetricProcessing;
 import metrics.classes.processing.metrics.CyclomaticComplexityMetricProcessing;
@@ -19,7 +23,7 @@ import java.util.List;
 
 /**
  * StaticAnalyzer
- *
+ * <p>
  * AllMetricsStarter - класс запускающий все метрики по-очереди
  *
  * @author Маркелов Александр A-07-18
@@ -56,8 +60,7 @@ public class AllMetricsStarter {
     // запуск метрик
     public void execute() {
         if (!resourceFiles.getFileList().isEmpty()) {
-            resourceFiles.filterFileList();
-            resourceFiles.getFilteredFileList()
+            resourceFiles.getCompilationUnitList()
                     .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
 
             doComplexMetrics(resourceFiles);
@@ -74,15 +77,25 @@ public class AllMetricsStarter {
     }
 
     // выполнение каждой метрики, которая требует один файл для анализа
-    private void doSimpleMetrics(File file) {
+    private void doSimpleMetrics(CompilationUnit file) {
         printDelimiter();
         printDelimiter();
-        log.info("File: {}", file.getPath());
+
+        log.info("File: {}",
+                file.getPackageDeclaration()
+                        .map(PackageDeclaration::getName)
+                        .map(Name::asString)
+                        .map(name -> name + "." + file.findFirst(ClassOrInterfaceDeclaration.class)
+                                .map(ClassOrInterfaceDeclaration::getNameAsString)
+                                .orElseThrow()
+                        )
+                        .orElseThrow()
+        );
         metricList.forEach(metric -> doMetricFabric(file, metric));
         doMaintainabilityMetric(file, metricList);
     }
 
-    private void doMaintainabilityMetric(File file, List<SimpleMetricProcessing> metricList){
+    private void doMaintainabilityMetric(CompilationUnit file, List<SimpleMetricProcessing> metricList) {
         CyclomaticComplexityMetricProcessing ccMetric = (CyclomaticComplexityMetricProcessing) metricList.stream()
                 .filter(CyclomaticComplexityMetricProcessing.class::isInstance)
                 .findFirst()
@@ -103,22 +116,23 @@ public class AllMetricsStarter {
         printMetric(miMetric);
     }
 
-    private void doMetricFabric(File file, SimpleMetricProcessing metricClass) {
+    private void doMetricFabric(CompilationUnit file, SimpleMetricProcessing metricClass) {
         setUpMetric(file, metricClass);
         printMetric(metricClass);
     }
 
-    private void setUpMetric(File file, SimpleMetricProcessing metric){
+    private void setUpMetric(CompilationUnit file, SimpleMetricProcessing metric) {
         metric.setFile(file);
         metric.processMetric();
     }
 
-    private void printMetric(MetricProcessing metric){
+
+    private void printMetric(MetricProcessing metric) {
         printDelimiter();
         log.info("{}: {}", metric.getClass().getSimpleName(), metric.getMetric());
     }
 
-    private void printDelimiter(){
+    private void printDelimiter() {
         log.info("=".repeat(50));
     }
 }

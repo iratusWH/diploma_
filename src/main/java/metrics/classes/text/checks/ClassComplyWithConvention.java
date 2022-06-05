@@ -1,7 +1,6 @@
 package metrics.classes.text.checks;
 
 import com.github.javaparser.Position;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -21,7 +20,7 @@ import static support.classes.RegexPatterns.VARIABLE_DECLARATION_TEMPLATE;
 
 /**
  * StaticAnalyzer
- *
+ * <p>
  * Класс проверяющий исследуемый файл на соответствие конвенции о названии классов, переменных и констант в Java-программах
  * Допущение: все переменные написаны с новой строки
  * прим:
@@ -47,19 +46,14 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
 
     @Override
     public void processMetric() {
-        try {
-            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
-            List<String> listOfMismatch = new ArrayList<>();
+        List<String> listOfMismatch = new ArrayList<>();
 
-            // вызов функций поиска ошибочных названий
-            findAndPutProblemClasses(listOfMismatch, compilationUnit);
-            findAndPutProblemConstants(listOfMismatch, compilationUnit);
-            findAndPutProblemVariables(listOfMismatch, compilationUnit);
+        // вызов функций поиска ошибочных названий
+        findAndPutProblemClasses(listOfMismatch, getFile());
+        findAndPutProblemConstants(listOfMismatch, getFile());
+        findAndPutProblemVariables(listOfMismatch, getFile());
 
-            setMetric(listOfMismatch.isEmpty() ? OK_MESSAGE : String.join(";\n", listOfMismatch));
-        } catch (Exception e) {
-            log.error("ClassComplyWithConvention error - {}", e.getMessage());
-        }
+        setMetric(listOfMismatch.isEmpty() ? OK_MESSAGE : String.join(";\n", listOfMismatch));
     }
 
     // поиск всех возможных ошибок при написании классов

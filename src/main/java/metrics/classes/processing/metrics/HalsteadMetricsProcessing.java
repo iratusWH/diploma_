@@ -3,9 +3,7 @@ package metrics.classes.processing.metrics;
 import com.github.javaparser.JavaToken;
 import com.github.javaparser.Position;
 import com.github.javaparser.Range;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.TokenRange;
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,20 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.MetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static support.classes.OperatorsConstClass.ALL_OPERATORS_LIST;
-import static support.classes.OperatorsConstClass.CLOSE_FIGURE_BRACKET;
-import static support.classes.OperatorsConstClass.CLOSE_ROUND_BRACKET;
-import static support.classes.OperatorsConstClass.EMPTY_STRING;
-import static support.classes.OperatorsConstClass.ESCAPE_SEQUENCES;
-import static support.classes.OperatorsConstClass.JAVADOC_OR_MULTILINE_COMMENT;
-import static support.classes.OperatorsConstClass.ONE_LINE_COMMENT;
-import static support.classes.OperatorsConstClass.SPACE_STRING;
+import static support.classes.OperatorsConstClass.*;
 
 /**
  * StaticAnalyzer
@@ -72,16 +62,17 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
 
     @Override
     public void processMetric() {
-        try {
-            CompilationUnit compilationUnit = StaticJavaParser.parse(getFile());
-            setAllLexemes(compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(), compilationUnit.getRange().orElseThrow());// получение всех лексем
+            setAllLexemes(
+                    getFile()
+                            .findFirst(ClassOrInterfaceDeclaration.class)
+                            .orElseThrow(),
+                    getFile()
+                            .getRange()
+                            .orElseThrow()
+            );// получение всех лексем
 
             processAllHalsteadMetrics(); // вычисление метрик
             setMetric(getFormattedResult()); // вывод метрик
-
-        } catch (FileNotFoundException e) {
-            log.error("HalsteadMetricsProcessing Error - {}", e.getMessage());
-        }
     }
 
     // функция поиска всех лексем в программе
