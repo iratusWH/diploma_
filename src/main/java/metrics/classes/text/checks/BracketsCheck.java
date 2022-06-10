@@ -6,7 +6,7 @@ import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.stmt.*;
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
+import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import org.apache.commons.lang3.StringUtils;
 import support.classes.MetricNameEnum;
 
@@ -23,7 +23,7 @@ import static support.classes.OperatorsConstClass.*;
  * @author Маркелов Александр A-07-18
  */
 @Slf4j
-public class BracketsCheck extends MetricProcessingImpl {
+public class BracketsCheck extends SimpleMetricProcessingImpl {
 
     // константа сообщения, которое сигнализирует о корректности класса
     private static final String OK_MESSAGE = "OK";

@@ -5,7 +5,7 @@ import com.github.javaparser.ast.stmt.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
+import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
-public class CyclomaticComplexityMetricProcessing extends MetricProcessingImpl {
+public class CyclomaticComplexityMetricProcessing extends SimpleMetricProcessingImpl {
 
     private Map<String, Integer> methodNamesWithOperatorsCount; // словарь методов и метрики цикломатической сложности
 

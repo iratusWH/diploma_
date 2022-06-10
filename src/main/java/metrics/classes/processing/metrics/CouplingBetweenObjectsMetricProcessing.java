@@ -5,7 +5,7 @@ import com.github.javaparser.ast.expr.Name;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
+import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
-public class CouplingBetweenObjectsMetricProcessing extends MetricProcessingImpl {
+public class CouplingBetweenObjectsMetricProcessing extends SimpleMetricProcessingImpl {
 
     private List<Name> imports; // лист импортируемых классов в исследуемом файле
 

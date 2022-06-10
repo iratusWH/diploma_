@@ -12,12 +12,11 @@ import metrics.classes.processing.metrics.HalsteadMetricsProcessing;
 import metrics.classes.processing.metrics.LOCMetricsProcessing;
 import metrics.classes.processing.metrics.MaintainabilityIndexMetricProcessing;
 import metrics.classes.text.checks.BracketsCheck;
-import metrics.classes.text.checks.ClassComplyWithConvention;
+import metrics.classes.text.checks.ClassComplyWithConventionCheck;
 import metrics.interfaces.MetricProcessing;
 import metrics.interfaces.SimpleMetricProcessing;
 import support.classes.ResourceFiles;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class AllMetricsStarter {
                 new HalsteadMetricsProcessing(),
                 new LOCMetricsProcessing(),
                 new BracketsCheck(),
-                new ClassComplyWithConvention()
+                new ClassComplyWithConventionCheck()
         );
 
         miMetric = new MaintainabilityIndexMetricProcessing();

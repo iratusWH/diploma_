@@ -8,7 +8,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
+import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import static support.classes.OperatorsConstClass.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class HalsteadMetricsProcessing extends MetricProcessingImpl {
+public class HalsteadMetricsProcessing extends SimpleMetricProcessingImpl {
 
     // шаблон форматированного вывода метрик
     private static final String RESULT_TEMPLATE =
@@ -100,9 +100,12 @@ public class HalsteadMetricsProcessing extends MetricProcessingImpl {
         allLexemes.removeIf(EMPTY_STRING::equals); // удаляем все пустые строки
         allLexemes.removeAll(ESCAPE_SEQUENCES); // удаляем все Escape-последовательности
 
-        allLexemes.forEach(lex -> {
-            if (lex.startsWith("\"")) totalQuotes++; // подсчет кол-ва
-        });
+
+        setTotalQuotes(allLexemes
+                .stream()
+                .filter(lex -> lex.contains("\""))
+                .count()
+        );
     }
 
     // функция запуска подсчета метрик Холстеда

@@ -6,7 +6,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
+import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import org.apache.commons.lang3.StringUtils;
 import support.classes.MetricNameEnum;
 
@@ -31,7 +31,7 @@ import static support.classes.RegexPatterns.VARIABLE_DECLARATION_TEMPLATE;
  */
 @EqualsAndHashCode(callSuper = false)
 @Slf4j
-public class ClassComplyWithConvention extends MetricProcessingImpl {
+public class ClassComplyWithConventionCheck extends SimpleMetricProcessingImpl {
 
     // шаблоны вывода различных ошибок
     private static final String OK_MESSAGE = "OK";
@@ -40,8 +40,8 @@ public class ClassComplyWithConvention extends MetricProcessingImpl {
     private static final String VARIABLE_PROBLEM = "Variables aren't comply with conventions: ";
     private static final String FORMATTING_TEMPLATE = "Variable: %s; Position: %s";
 
-    public ClassComplyWithConvention() {
-        setMetricName(MetricNameEnum.CLASS_COMPLY_WITH_CONVENTION);
+    public ClassComplyWithConventionCheck() {
+        setMetricName(MetricNameEnum.CLASS_COMPLY_WITH_CONVENTION_CHECK);
     }
 
     @Override

@@ -3,7 +3,7 @@ package metrics.classes.processing.metrics;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import metrics.classes.implementations.MetricProcessingImpl;
+import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class MaintainabilityIndexMetricProcessing extends MetricProcessingImpl {
+public class MaintainabilityIndexMetricProcessing extends SimpleMetricProcessingImpl {
 
     private CyclomaticComplexityMetricProcessing cyclomaticComplexityMetric; // класс метрики цикломатической сложности кода
     private HalsteadMetricsProcessing halsteadMetricsProcessing; // класс метрик Холстеда

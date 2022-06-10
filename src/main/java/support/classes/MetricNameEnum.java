@@ -17,7 +17,10 @@ public enum MetricNameEnum {
     MAINTAINABILITY_INDEX_METRIC("Maintainability Index Metric"),
     LINES_OF_CODE_METRIC("Lines of code"),
     BRACKET_CHECK("Bracket Check"),
-    CLASS_COMPLY_WITH_CONVENTION("Class comply with convention check");
+    CLASS_COMPLY_WITH_CONVENTION_CHECK("Class comply with convention check"),
+    GOD_OBJECT_ANTIPATTERN("God Object Antipattern"),
+    ANEMIC_DOMAIN_MODEL_ANTIPATTERN("Anemic Domain Model Antipattern");
+
 
     final String name;
 }
