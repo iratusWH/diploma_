@@ -31,7 +31,7 @@ import static support.classes.RegexPatterns.VARIABLE_DECLARATION_TEMPLATE;
  */
 @EqualsAndHashCode(callSuper = false)
 @Slf4j
-public class ClassComplyWithConventionCheck extends SimpleMetricProcessingImpl {
+public class ClassComplyWithNamingConventionCheck extends SimpleMetricProcessingImpl {
 
     // шаблоны вывода различных ошибок
     private static final String OK_MESSAGE = "OK";
@@ -40,7 +40,7 @@ public class ClassComplyWithConventionCheck extends SimpleMetricProcessingImpl {
     private static final String VARIABLE_PROBLEM = "Variables aren't comply with conventions: ";
     private static final String FORMATTING_TEMPLATE = "Variable: %s; Position: %s";
 
-    public ClassComplyWithConventionCheck() {
+    public ClassComplyWithNamingConventionCheck() {
         setMetricName(MetricNameEnum.CLASS_COMPLY_WITH_CONVENTION_CHECK);
     }
 

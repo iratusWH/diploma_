@@ -17,21 +17,11 @@ public class LOCMetricsProcessing extends SimpleMetricProcessingImpl {
 
     @Override
     public void processMetric() {
-        try {
-            evaluatingMetric();
-        } catch (Exception e) {
-            log.error("LOCMetricProcessing error while getting parse file");
-        }
-    }
-
-    // вычисление метрики через свойство объекта Range
-    private void evaluatingMetric() {
         setMetric(
                 this.getFile()
                         .getRange()
                         .map(Range::getLineCount)
                         .orElse(0)
         );
-
     }
 }

@@ -54,7 +54,6 @@ public class HTMLComposer {
     }
 
     void generateOutputFileByHTMLDocument(Document htmlDoc) throws IOException {
-        File outerHTML = new File(path);
-        FileUtils.writeStringToFile(outerHTML, htmlDoc.outerHtml(), StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(new File(path), htmlDoc.outerHtml(), StandardCharsets.UTF_8);
     }
 }
