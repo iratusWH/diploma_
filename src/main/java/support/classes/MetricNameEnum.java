@@ -20,7 +20,8 @@ public enum MetricNameEnum {
     CLASS_COMPLY_WITH_CONVENTION_CHECK("Class comply with convention check"),
     GOD_OBJECT_ANTIPATTERN("God Object Antipattern"),
     ANEMIC_DOMAIN_MODEL_ANTIPATTERN("Anemic Domain Model Antipattern"),
-    CALL_SUPER_ANTIPATTERN("Call Super Antipattern");
+    CALL_SUPER_ANTIPATTERN("Call Super Antipattern"),
+    VARIABLE_DECLARATION_ON_NEW_LINE_CHECK("Variable Declaration on new line check");
 
 
     final String name;

@@ -15,6 +15,7 @@ import metrics.classes.processing.metrics.LOCMetricsProcessing;
 import metrics.classes.processing.metrics.MaintainabilityIndexMetricProcessing;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithNamingConventionCheck;
+import metrics.classes.text.checks.VariableOnNewLineCheck;
 import metrics.interfaces.MetricProcessing;
 import metrics.interfaces.SimpleMetricProcessing;
 import support.classes.ResourceFiles;
@@ -48,7 +49,7 @@ public class AllMetricsStarter {
 //                new LOCMetricsProcessing(),
 //                new BracketsCheck(),
 //                new ClassComplyWithNamingConventionCheck()
-                new CallSuperAntipattern()
+                new VariableOnNewLineCheck()
         );
 
 //        miMetric = new MaintainabilityIndexMetricProcessing();

@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
