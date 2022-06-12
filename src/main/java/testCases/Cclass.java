@@ -3,7 +3,11 @@ package testCases;
 public class Cclass extends Bclass{
     private final String someVar;
     Cclass(){
+        this("asd");
+    }
+
+    Cclass(String someVar){
         super();
-        someVar = "abc";
+        this.someVar = someVar;
     }
 }

@@ -19,7 +19,8 @@ public enum MetricNameEnum {
     BRACKET_CHECK("Bracket Check"),
     CLASS_COMPLY_WITH_CONVENTION_CHECK("Class comply with convention check"),
     GOD_OBJECT_ANTIPATTERN("God Object Antipattern"),
-    ANEMIC_DOMAIN_MODEL_ANTIPATTERN("Anemic Domain Model Antipattern");
+    ANEMIC_DOMAIN_MODEL_ANTIPATTERN("Anemic Domain Model Antipattern"),
+    CALL_SUPER_ANTIPATTERN("Call Super Antipattern");
 
 
     final String name;
