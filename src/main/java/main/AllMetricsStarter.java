@@ -7,6 +7,7 @@ import com.github.javaparser.ast.expr.Name;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.oop.antipattern.AnemicDomainModelAntipattern;
 import metrics.classes.oop.antipattern.CallSuperAntipattern;
+import metrics.classes.oop.antipattern.GodObjectAntipattern;
 import metrics.classes.processing.metrics.CouplingBetweenObjectsMetricProcessing;
 import metrics.classes.processing.metrics.CyclomaticComplexityMetricProcessing;
 import metrics.classes.processing.metrics.DepthOfInheritanceTreeMetricProcessing;
@@ -49,6 +50,7 @@ public class AllMetricsStarter {
 //                new LOCMetricsProcessing(),
 //                new BracketsCheck(),
 //                new ClassComplyWithNamingConventionCheck()
+                new GodObjectAntipattern(),
                 new VariableOnNewLineCheck()
         );
 
