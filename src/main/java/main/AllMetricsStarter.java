@@ -41,7 +41,7 @@ public class AllMetricsStarter {
     ResourceFiles resourceFiles; // объект хранящий список файлов
 
     private final List<SimpleMetricProcessing> metricList; // список метрик, требующих на вход один файл
-    private final DepthOfInheritanceTreeMetricProcessing ditMetric; // метрика глубины дерева наследования
+//    private final DepthOfInheritanceTreeMetricProcessing ditMetric; // метрика глубины дерева наследования
 //    private final MaintainabilityIndexMetricProcessing miMetric; // метрика ремонтопригодности кода
     private final List<HTMLComponent> metricComponentList = new ArrayList<>(40);
 
@@ -57,11 +57,12 @@ public class AllMetricsStarter {
 //                new BracketsCheck(),
 //                new ClassComplyWithNamingConventionCheck()
 //                new GodObjectAntipattern(),
-                new VariableOnNewLineCheck()
+//                new VariableOnNewLineCheck()
+                new AnemicDomainModelAntipattern()
         );
 
 //        miMetric = new MaintainabilityIndexMetricProcessing();
-        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
+//        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
     }
 
     public static AllMetricsStarter getStarter(String fullProjectPath) {
@@ -74,25 +75,25 @@ public class AllMetricsStarter {
             resourceFiles.getCompilationUnitList()
                     .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
 
-            doComplexMetrics(resourceFiles);
-            try {
-                composeHtml();
-            } catch (IOException e) {
-                log.error("Problems wih saving HTML doc");
-            }
+//            doComplexMetrics(resourceFiles);
+//            try {
+//                composeHtml();
+//            } catch (IOException e) {
+//                log.error("Problems wih saving HTML doc");
+//            }
         } else {
             log.warn("Java classes not found!");
         }
     }
 
     // вычисление метрики требующей всю директорию файлов java
-    private void doComplexMetrics(ResourceFiles resourceFiles) {
-        ditMetric.setFileList(resourceFiles);
-        ditMetric.processMetric();
-        printMetric(ditMetric);
-
-        metricComponentList.add(ditMetric.getHtmlComponent());
-    }
+//    private void doComplexMetrics(ResourceFiles resourceFiles) {
+//        ditMetric.setFileList(resourceFiles);
+//        ditMetric.processMetric();
+//        printMetric(ditMetric);
+//
+//        metricComponentList.add(ditMetric.getHtmlComponent());
+//    }
 
     // выполнение каждой метрики, которая требует один файл для анализа
     private void doSimpleMetrics(CompilationUnit file) {
@@ -112,12 +113,12 @@ public class AllMetricsStarter {
         metricList.forEach(metric -> doMetricFabric(file, metric));
 //        doMaintainabilityMetric(file, metricList);
 
-        metricComponentList.addAll(
-                metricList
-                        .stream()
-                        .map(SimpleMetricProcessing::getHtmlComponent)
-                        .toList()
-        );
+//        metricComponentList.addAll(
+//                metricList
+//                        .stream()
+//                        .map(SimpleMetricProcessing::getHtmlComponent)
+//                        .toList()
+//        );
 
 //        metricComponentList.add(miMetric.getHtmlComponent);
 
