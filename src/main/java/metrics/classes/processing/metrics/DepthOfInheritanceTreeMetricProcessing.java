@@ -38,29 +38,28 @@ public class DepthOfInheritanceTreeMetricProcessing extends ComplexMetricProcess
     @Override
     public void processMetric() {
         depthOfInheritanceMap = new HashMap<>();
-        getFileList().filterFileList(); // фильтрация листа с исследуемыми файлами, остаются только файлы содержащие классы
         try {
-            setMetric( // вывод метрики
-                    String.valueOf(
-                            searchMaxDepthOfInheritance(getFileList().getFilteredFileList()) // поиск максимальной глубины
-                    )
-            );
+            searchMaxDepthOfInheritance(getFileList().getFilteredFileList()); // поиск максимальной глубины
+
             log.info("{}", depthOfInheritanceMap);
         } catch (FileNotFoundException fileNotFoundException) {
             log.error("File not found!");
         }
     }
 
-    public int searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException {
+    public void searchMaxDepthOfInheritance(List<File> classFiles) throws FileNotFoundException {
         int depth = 0; // максимальная глубина
         int tempDepth; // временная глубина
+        String tempFileName = "";
         for (File classFile : classFiles) {
             tempDepth = visitClass(classFile); // находение глубины наследования текущего файла
             if (tempDepth > depth) {
                 depth = tempDepth;
+                tempFileName = classFile.getName();
             }
         }
-        return depth;
+
+        setMetric("Max depth of inheritance tree: "+ tempFileName + " with depth - " + depth);
     }
 
     public int visitClass(File classFile) throws FileNotFoundException {

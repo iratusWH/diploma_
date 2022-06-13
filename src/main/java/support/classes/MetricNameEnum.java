@@ -3,10 +3,11 @@ package support.classes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Objects;
+
 /**
  * Перечисление констант-названий метрик
  */
-@Getter
 @RequiredArgsConstructor
 public enum MetricNameEnum {
     COUPLING_BETWEEN_OBJECTS_METRIC("Coupling between Objects Metric"),
@@ -21,8 +22,15 @@ public enum MetricNameEnum {
     GOD_OBJECT_ANTIPATTERN("God Object Antipattern"),
     ANEMIC_DOMAIN_MODEL_ANTIPATTERN("Anemic Domain Model Antipattern"),
     CALL_SUPER_ANTIPATTERN("Call Super Antipattern"),
-    VARIABLE_DECLARATION_ON_NEW_LINE_CHECK("Variable Declaration on new line check");
-
+    VARIABLE_DECLARATION_ON_NEW_LINE_CHECK("Variable Declaration on new line check"),
+    DEFAULT_METRIC_NAME("METRIC");
 
     final String name;
+
+    String getName() {
+        if (Objects.nonNull(this.name)) {
+            return this.name;
+        }
+        return "metric without name";
+    }
 }

@@ -26,7 +26,7 @@ import java.util.Optional;
 @Data
 public class ResourceFiles {
 
-    private String projectPath; // строка пути проекта
+    private final String projectPath; // строка пути проекта
     private List<File> fileList; // список всех файлов проекта
     private List<File> filteredFileList; // отфильтрованный список java-классов
     private CompilationUnit compilationUnit;
@@ -54,8 +54,6 @@ public class ResourceFiles {
         List<File> javaFilesList = new ArrayList<>();
         List<Path> directoryList = new ArrayList<>();
         List<Path> directorySecondList = new ArrayList<>();
-
-        projectPath = startDirectory;
 
         Path startDirectoryPath = Path.of(startDirectory);
         File directoryFile;
