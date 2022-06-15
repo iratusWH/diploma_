@@ -26,7 +26,7 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
     List<String> methodsNames;
     Integer methodsCount;
 
-    AnemicDomainModelAntipattern(){
+    public AnemicDomainModelAntipattern(){
         setMetricName(MetricNameEnum.ANEMIC_DOMAIN_MODEL_ANTIPATTERN);
     }
 

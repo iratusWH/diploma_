@@ -70,7 +70,7 @@ public class AllMetricsStarter {
     }
 
     // запуск метрик
-    public void execute() {
+    public String execute() {
         if (!resourceFiles.getFileList().isEmpty()) {
             resourceFiles.getCompilationUnitList()
                     .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
@@ -81,8 +81,9 @@ public class AllMetricsStarter {
 //            } catch (IOException e) {
 //                log.error("Problems wih saving HTML doc");
 //            }
+            return "OK";
         } else {
-            log.warn("Java classes not found!");
+            return "Java classes not found!";
         }
     }
 
