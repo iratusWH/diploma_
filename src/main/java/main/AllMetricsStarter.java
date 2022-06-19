@@ -54,11 +54,11 @@ public class AllMetricsStarter {
 //                new CyclomaticComplexityMetricProcessing(),
 //                new HalsteadMetricsProcessing(),
 //                new LOCMetricsProcessing(),
-//                new BracketsCheck(),
+                new BracketsCheck()
 //                new ClassComplyWithNamingConventionCheck()
 //                new GodObjectAntipattern(),
 //                new VariableOnNewLineCheck()
-                new AnemicDomainModelAntipattern()
+//                new AnemicDomainModelAntipattern()
         );
 
 //        miMetric = new MaintainabilityIndexMetricProcessing();
@@ -76,11 +76,11 @@ public class AllMetricsStarter {
                     .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
 
 //            doComplexMetrics(resourceFiles);
-//            try {
-//                composeHtml();
-//            } catch (IOException e) {
-//                log.error("Problems wih saving HTML doc");
-//            }
+            try {
+                composeHtml();
+            } catch (IOException e) {
+                log.error("Problems wih saving HTML doc");
+            }
             return "OK";
         } else {
             return "Java classes not found!";
@@ -114,12 +114,12 @@ public class AllMetricsStarter {
         metricList.forEach(metric -> doMetricFabric(file, metric));
 //        doMaintainabilityMetric(file, metricList);
 
-//        metricComponentList.addAll(
-//                metricList
-//                        .stream()
-//                        .map(SimpleMetricProcessing::getHtmlComponent)
-//                        .toList()
-//        );
+        metricComponentList.addAll(
+                metricList
+                        .stream()
+                        .map(SimpleMetricProcessing::getHtmlComponent)
+                        .toList()
+        );
 
 //        metricComponentList.add(miMetric.getHtmlComponent);
 

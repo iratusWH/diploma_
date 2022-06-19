@@ -1,53 +1,115 @@
 package main.ui;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
+import main.StaticAnalyzer;
+import support.classes.AnalyzeResultInfo;
 
-import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
-public class MainForm extends JFrame {
+public class MainForm extends Application {
 
-    JButton btnFile;
-    JButton btnStart;
+    private File projectPath;
+    private AnalyzeResultInfo resultInfo;
 
-    MainForm () {
-        super("TitleScreen");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        btnFile = new JButton("Обзор...");
-        btnStart = new JButton("Запуск");
-
-        JPanel contents = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        contents.add(btnFile);
-        contents.add(btnStart);
-
-        setContentPane(contents);
-
-        btnFile.addActionListener(new FileListener(inf, this));
-        btnStart.addActionListener(new AnalysisListener(this));
+    public static void main(String[] args) {
+        launch();
     }
 
-    static MainForm getInstance(){
-        return new MainForm();
+    @Override
+    public void start(Stage stage) {
+        Node[] elements = getNodes(stage);
+        FlowPane root = getFlowPane(elements);
+
+        Scene scene = getScene(root);
+        stage.setTitle("Static Analyzer");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    public static void startMainForm(FormSetUp setUp){
-        MainForm form = getInstance();
-        form.setSize(setUp.size.width, setUp.size.height);
-        form.setBounds(setUp.rectangle);
+    FlowPane getFlowPane(Node... nodes) {
+        FlowPane flowPane = new FlowPane(Orientation.VERTICAL, 10, 10, nodes);
+        flowPane.setBackground(new Background(new BackgroundFill(Color.rgb(52,22,22), CornerRadii.EMPTY, Insets.EMPTY)));
+        flowPane.setPadding(new Insets(15));
+        flowPane.setAlignment(Pos.CENTER);
+        return flowPane;
     }
 
-    @Builder
-    public static class FormSetUp {
-        private boolean visible;
-        private Size size;
-        private Rectangle rectangle;
+    Scene getScene(Pane root) {
+        return new Scene(root, 250, 200);
     }
 
-    @Builder
-    public static class Size {
-        private int width;
-        private int height;
+    Node[] getNodes(Stage stage) {
+        Label directoryLabel = new Label("Директория проекта");
+        TextField directoryPath = new TextField();
+        Button directoryChooserButton = new Button("Выбор директории");
+        Button startAnalyzerButton = new Button("Приступить к анализу");
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+
+        directoryLabel.setTextFill(Color.WHEAT);
+        directoryPath.appendText("Введите директорию проекта");
+        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        startAnalyzerButton.setDisable(true);
+
+        directoryChooserButton.setOnAction(
+                actionEvent -> {
+                    projectPath = directoryChooser.showDialog(stage);
+                    directoryPath.setText(projectPath.getPath());
+                    startAnalyzerButton.setDisable(false);
+                }
+        );
+
+        startAnalyzerButton.setOnAction(
+                actionEvent -> {
+                    resultInfo = StaticAnalyzer.starter(projectPath.getPath());
+                    Alert resultInfoMessageWindow = getAlertMessageWindow(resultInfo);
+                    resultInfoMessageWindow.show();
+
+                    if (resultInfo.isResult()) {
+                        openFile(resultInfo.getFolder());
+                    }
+                }
+        );
+
+        return new Node[] {
+                directoryLabel,
+                directoryPath,
+                directoryChooserButton,
+                startAnalyzerButton
+        };
+    }
+
+    Alert getAlertMessageWindow(AnalyzeResultInfo resultInfo) {
+        Alert resultInfoMessageWindow = new Alert(resultInfo.getAlertType());
+        resultInfoMessageWindow.setTitle("Static Analyzer");
+        resultInfoMessageWindow.setContentText(resultInfo.isResult() ? "Отчет " + resultInfo.getFolder() + " сохранен!"  : resultInfo.getErrorMessage());
+        resultInfoMessageWindow.setHeaderText(resultInfo.isResult() ? "Выполнено!" : "Ошибка");
+
+        return resultInfoMessageWindow;
+    }
+
+    void openFile(String filePath) {
+        try {
+            Desktop.getDesktop().open(new File(filePath));
+
+        } catch (Exception e) {
+            Alert errorOpeningResultMessageWindow = new Alert(Alert.AlertType.ERROR);
+            errorOpeningResultMessageWindow.setTitle("Static Analyzer");
+            errorOpeningResultMessageWindow.setHeaderText("Ошибка открытия отчета!");
+            errorOpeningResultMessageWindow.show();
+        }
     }
 }
