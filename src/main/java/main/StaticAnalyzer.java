@@ -8,7 +8,6 @@ import support.classes.AnalyzeResultInfo;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -35,7 +34,7 @@ public class StaticAnalyzer {
 
                     log.info(res);
                     return AnalyzeResultInfo.builder()
-                            .alertType(Alert.AlertType.INFORMATION)
+                            .alertType(res.contains("OK") ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING)
                             .folder(path[0] + "MetricResult.html")
                             .errorMessage(res)
                             .result(Objects.equals(res, "OK"))
@@ -50,6 +49,7 @@ public class StaticAnalyzer {
                     .build();
 
         } catch (Exception e) {
+            log.info("Error: {}", e.getMessage(), e);
             return AnalyzeResultInfo.builder()
                     .alertType(Alert.AlertType.ERROR)
                     .errorMessage("Something went wrong!")

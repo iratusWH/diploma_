@@ -30,7 +30,9 @@ public class HTMLComposer {
 
         Document htmlDoc = Jsoup.parse(template, "UTF-8");
 
-        htmlComponents.forEach(component -> htmlDoc.body().getElementsByTag("wrapper").append(component.composeHTML()));
+        HTMLComponentPages pages = new HTMLComponentPages(htmlComponents);
+        pages.getPages()
+                .forEach(page -> htmlDoc.body().getElementsByTag("wrapper").append(page));
 
         log.info("HTMLCompiler {}", htmlDoc);
         try {

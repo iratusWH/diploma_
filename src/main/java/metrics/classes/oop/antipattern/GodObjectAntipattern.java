@@ -52,7 +52,9 @@ public class GodObjectAntipattern extends SimpleMetricProcessingImpl {
                 .filter(isConstant)
                 .count();
 
-//        setMetric(getResultByClassInfo(staticMethodsCount, methodsCount, constantsCount, fieldsCount));
+        setMetric("OK"
+//                getResultByClassInfo(staticMethodsCount, methodsCount, constantsCount, fieldsCount)
+        );
     }
 
     private String getResultByClassInfo(Long staticMethodsCount, Integer methodsCount, Long constantsCount, Integer fieldsCount) {

@@ -15,7 +15,6 @@ import java.util.function.Predicate;
 @Slf4j
 public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
 
-    //    private final Consumer<AnnotationDeclaration> nameOfAnnotation = (name)
     private final Predicate<MarkerAnnotationExpr> dataAnnotation = annotation -> annotation.getNameAsString().contains("Data");
     private static final Predicate<String> noneServiceMethods = name -> !"equals".equals(name) || !"hashCode".equals(name) || !"toString".equals(name);
 

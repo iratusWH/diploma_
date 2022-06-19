@@ -41,8 +41,8 @@ public class AllMetricsStarter {
     ResourceFiles resourceFiles; // объект хранящий список файлов
 
     private final List<SimpleMetricProcessing> metricList; // список метрик, требующих на вход один файл
-//    private final DepthOfInheritanceTreeMetricProcessing ditMetric; // метрика глубины дерева наследования
-//    private final MaintainabilityIndexMetricProcessing miMetric; // метрика ремонтопригодности кода
+    private final DepthOfInheritanceTreeMetricProcessing ditMetric; // метрика глубины дерева наследования
+    private final MaintainabilityIndexMetricProcessing miMetric; // метрика ремонтопригодности кода
     private final List<HTMLComponent> metricComponentList = new ArrayList<>(40);
 
     // инициализация объектов метрик
@@ -50,19 +50,19 @@ public class AllMetricsStarter {
         resourceFiles = new ResourceFiles(fullProjectPath);
 
         metricList = Arrays.asList(
-//                new CouplingBetweenObjectsMetricProcessing(),
-//                new CyclomaticComplexityMetricProcessing(),
-//                new HalsteadMetricsProcessing(),
-//                new LOCMetricsProcessing(),
-                new BracketsCheck()
-//                new ClassComplyWithNamingConventionCheck()
+                new CouplingBetweenObjectsMetricProcessing(),
+                new CyclomaticComplexityMetricProcessing(),
+                new HalsteadMetricsProcessing(),
+                new LOCMetricsProcessing(),
+                new BracketsCheck(),
+                new ClassComplyWithNamingConventionCheck(),
 //                new GodObjectAntipattern(),
-//                new VariableOnNewLineCheck()
+                new VariableOnNewLineCheck()
 //                new AnemicDomainModelAntipattern()
         );
 
-//        miMetric = new MaintainabilityIndexMetricProcessing();
-//        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
+        miMetric = new MaintainabilityIndexMetricProcessing();
+        ditMetric = new DepthOfInheritanceTreeMetricProcessing();
     }
 
     public static AllMetricsStarter getStarter(String fullProjectPath) {
@@ -75,7 +75,7 @@ public class AllMetricsStarter {
             resourceFiles.getCompilationUnitList()
                     .forEach(this::doSimpleMetrics); // обработка каждой метрики в цикле
 
-//            doComplexMetrics(resourceFiles);
+            doComplexMetrics(resourceFiles);
             try {
                 composeHtml();
             } catch (IOException e) {
@@ -88,13 +88,13 @@ public class AllMetricsStarter {
     }
 
     // вычисление метрики требующей всю директорию файлов java
-//    private void doComplexMetrics(ResourceFiles resourceFiles) {
-//        ditMetric.setFileList(resourceFiles);
-//        ditMetric.processMetric();
-//        printMetric(ditMetric);
-//
-//        metricComponentList.add(ditMetric.getHtmlComponent());
-//    }
+    private void doComplexMetrics(ResourceFiles resourceFiles) {
+        ditMetric.setFileList(resourceFiles);
+        ditMetric.processMetric();
+        printMetric(ditMetric);
+
+        metricComponentList.add(ditMetric.getHtmlComponent());
+    }
 
     // выполнение каждой метрики, которая требует один файл для анализа
     private void doSimpleMetrics(CompilationUnit file) {
@@ -112,7 +112,7 @@ public class AllMetricsStarter {
                         .orElseThrow()
         );
         metricList.forEach(metric -> doMetricFabric(file, metric));
-//        doMaintainabilityMetric(file, metricList);
+        doMaintainabilityMetric(file, metricList);
 
         metricComponentList.addAll(
                 metricList
@@ -121,30 +121,29 @@ public class AllMetricsStarter {
                         .toList()
         );
 
-//        metricComponentList.add(miMetric.getHtmlComponent);
-
+        metricComponentList.add(miMetric.getHtmlComponent());
     }
 
-//    private void doMaintainabilityMetric(CompilationUnit file, List<SimpleMetricProcessing> metricList) {
-//        CyclomaticComplexityMetricProcessing ccMetric = (CyclomaticComplexityMetricProcessing) metricList.stream()
-//                .filter(CyclomaticComplexityMetricProcessing.class::isInstance)
-//                .findFirst()
-//                .orElseThrow();
-//
-//        HalsteadMetricsProcessing hmMetric = (HalsteadMetricsProcessing) metricList.stream()
-//                .filter(HalsteadMetricsProcessing.class::isInstance)
-//                .findFirst()
-//                .orElseThrow();
-//
-//        LOCMetricsProcessing locMetric = (LOCMetricsProcessing) metricList.stream()
-//                .filter(LOCMetricsProcessing.class::isInstance)
-//                .findFirst()
-//                .orElseThrow();
-//
-//        miMetric.setMetrics(ccMetric, hmMetric, locMetric);
-//        setUpMetric(file, miMetric);
-//        printMetric(miMetric);
-//    }
+    private void doMaintainabilityMetric(CompilationUnit file, List<SimpleMetricProcessing> metricList) {
+        CyclomaticComplexityMetricProcessing ccMetric = (CyclomaticComplexityMetricProcessing) metricList.stream()
+                .filter(CyclomaticComplexityMetricProcessing.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+
+        HalsteadMetricsProcessing hmMetric = (HalsteadMetricsProcessing) metricList.stream()
+                .filter(HalsteadMetricsProcessing.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+
+        LOCMetricsProcessing locMetric = (LOCMetricsProcessing) metricList.stream()
+                .filter(LOCMetricsProcessing.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+
+        miMetric.setMetrics(ccMetric, hmMetric, locMetric);
+        setUpMetric(file, miMetric);
+        printMetric(miMetric);
+    }
 
     private void doMetricFabric(CompilationUnit file, SimpleMetricProcessing metricClass) {
         setUpMetric(file, metricClass);

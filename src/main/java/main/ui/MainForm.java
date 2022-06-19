@@ -10,14 +10,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import main.StaticAnalyzer;
 import support.classes.AnalyzeResultInfo;
 
-import java.awt.*;
 import java.io.File;
 
 public class MainForm extends Application {
@@ -40,7 +43,7 @@ public class MainForm extends Application {
         stage.show();
     }
 
-    FlowPane getFlowPane(Node... nodes) {
+    private FlowPane getFlowPane(Node... nodes) {
         FlowPane flowPane = new FlowPane(Orientation.VERTICAL, 10, 10, nodes);
         flowPane.setBackground(new Background(new BackgroundFill(Color.rgb(52,22,22), CornerRadii.EMPTY, Insets.EMPTY)));
         flowPane.setPadding(new Insets(15));
@@ -48,11 +51,11 @@ public class MainForm extends Application {
         return flowPane;
     }
 
-    Scene getScene(Pane root) {
+    private Scene getScene(Pane root) {
         return new Scene(root, 250, 200);
     }
 
-    Node[] getNodes(Stage stage) {
+    private Node[] getNodes(Stage stage) {
         Label directoryLabel = new Label("Директория проекта");
         TextField directoryPath = new TextField();
         Button directoryChooserButton = new Button("Выбор директории");
@@ -77,10 +80,6 @@ public class MainForm extends Application {
                     resultInfo = StaticAnalyzer.starter(projectPath.getPath());
                     Alert resultInfoMessageWindow = getAlertMessageWindow(resultInfo);
                     resultInfoMessageWindow.show();
-
-                    if (resultInfo.isResult()) {
-                        openFile(resultInfo.getFolder());
-                    }
                 }
         );
 
@@ -92,24 +91,12 @@ public class MainForm extends Application {
         };
     }
 
-    Alert getAlertMessageWindow(AnalyzeResultInfo resultInfo) {
+    private Alert getAlertMessageWindow(AnalyzeResultInfo resultInfo) {
         Alert resultInfoMessageWindow = new Alert(resultInfo.getAlertType());
-        resultInfoMessageWindow.setTitle("Static Analyzer");
+        resultInfoMessageWindow.setTitle(resultInfo.isResult() ? "Выполнено!" : "Ошибка");
         resultInfoMessageWindow.setContentText(resultInfo.isResult() ? "Отчет " + resultInfo.getFolder() + " сохранен!"  : resultInfo.getErrorMessage());
-        resultInfoMessageWindow.setHeaderText(resultInfo.isResult() ? "Выполнено!" : "Ошибка");
+        resultInfoMessageWindow.setHeaderText(null);
 
         return resultInfoMessageWindow;
-    }
-
-    void openFile(String filePath) {
-        try {
-            Desktop.getDesktop().open(new File(filePath));
-
-        } catch (Exception e) {
-            Alert errorOpeningResultMessageWindow = new Alert(Alert.AlertType.ERROR);
-            errorOpeningResultMessageWindow.setTitle("Static Analyzer");
-            errorOpeningResultMessageWindow.setHeaderText("Ошибка открытия отчета!");
-            errorOpeningResultMessageWindow.show();
-        }
     }
 }
