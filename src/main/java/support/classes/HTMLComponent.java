@@ -10,6 +10,7 @@ import java.util.Objects;
 public class HTMLComponent {
     private static final String DIV_STARTING_METRIC_NAME = "<div class='metric_name'>";
     private static final String DIV_STARTING_CLASS_METRIC_RESULT = "<div class='metric_result'>";
+    private static final String DIV_SINGLE_METRIC_WRAPPER = "<div class='metric'>";
     private static final String DIV_ENDING = "</div>\n";
 
     private MetricNameEnum metricName;
@@ -21,11 +22,13 @@ public class HTMLComponent {
     }
 
     public String composeHTML(){
-        return DIV_STARTING_METRIC_NAME +
-                    this.getMetricName().getName() +
-                DIV_ENDING +
-                DIV_STARTING_CLASS_METRIC_RESULT +
-                    this.getMetric() +
+        return DIV_SINGLE_METRIC_WRAPPER +
+                    DIV_STARTING_METRIC_NAME +
+                        this.getMetricName().getName() +
+                    DIV_ENDING +
+                    DIV_STARTING_CLASS_METRIC_RESULT +
+                        this.getMetric() +
+                    DIV_ENDING +
                 DIV_ENDING;
     }
 }

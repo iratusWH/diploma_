@@ -1,20 +1,23 @@
 package metrics.classes.oop.antipattern;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithStaticModifier;
 import lombok.EqualsAndHashCode;
 import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 @EqualsAndHashCode(callSuper = false)
 public class GodObjectAntipattern extends SimpleMetricProcessingImpl {
 
-    private static final Long METHODS_COUNT = 5L;
-    private static final Long FIELDS_COUNT = 5L;
-    private static final Long CONSTANTS_COUNT = 5L;
+    private static final Long METHODS_COUNT = 20L;
+    private static final Long FIELDS_COUNT = 10L;
+    private static final Long CONSTANTS_COUNT = 10L;
 
     private static final String GOD_OBJECT_CONST = "Class is a God Object";
     private static final String DATA_CLASS_CONST = "Class is a Data class";
@@ -40,11 +43,11 @@ public class GodObjectAntipattern extends SimpleMetricProcessingImpl {
                 .filter(MethodDeclaration::isStatic)
                 .count();
 
-        var fieldsCount = getFile()
-                .findAll(ClassOrInterfaceDeclaration.class)
+        long fieldsCount = getFile()
+                .findAll(FieldDeclaration.class)
                 .stream()
-                .map(cl -> cl.getChildNodes())
-                .toList();
+                .filter(Predicate.not(NodeWithStaticModifier::isStatic))
+                .count();
 
         Long constantsCount = getFile()
                 .findAll(FieldDeclaration.class)
@@ -52,13 +55,13 @@ public class GodObjectAntipattern extends SimpleMetricProcessingImpl {
                 .filter(isConstant)
                 .count();
 
-        setMetric("OK"
-//                getResultByClassInfo(staticMethodsCount, methodsCount, constantsCount, fieldsCount)
+        setMetric(
+                getResultByClassInfo(staticMethodsCount, methodsCount, constantsCount, fieldsCount)
         );
     }
 
-    private String getResultByClassInfo(Long staticMethodsCount, Integer methodsCount, Long constantsCount, Integer fieldsCount) {
-        boolean isUtilClass = staticMethodsCount > METHODS_COUNT;
+    private String getResultByClassInfo(Long staticMethodsCount, Integer methodsCount, Long constantsCount, long fieldsCount) {
+        boolean isUtilClass = staticMethodsCount > METHODS_COUNT && fieldsCount == 0;
         boolean isConstantsClass = constantsCount > CONSTANTS_COUNT && staticMethodsCount == 0 && methodsCount == 0 && fieldsCount == 0;
         boolean isDataClass = fieldsCount > FIELDS_COUNT && staticMethodsCount == 0 && methodsCount < 4;
 

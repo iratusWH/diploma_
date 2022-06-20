@@ -22,6 +22,8 @@ import main.StaticAnalyzer;
 import support.classes.AnalyzeResultInfo;
 
 import java.io.File;
+import java.util.Objects;
+import java.util.Optional;
 
 public class MainForm extends Application {
 
@@ -45,7 +47,7 @@ public class MainForm extends Application {
 
     private FlowPane getFlowPane(Node... nodes) {
         FlowPane flowPane = new FlowPane(Orientation.VERTICAL, 10, 10, nodes);
-        flowPane.setBackground(new Background(new BackgroundFill(Color.rgb(52,22,22), CornerRadii.EMPTY, Insets.EMPTY)));
+        flowPane.setBackground(new Background(new BackgroundFill(Color.rgb(52, 22, 22), CornerRadii.EMPTY, Insets.EMPTY)));
         flowPane.setPadding(new Insets(15));
         flowPane.setAlignment(Pos.CENTER);
         return flowPane;
@@ -69,21 +71,31 @@ public class MainForm extends Application {
 
         directoryChooserButton.setOnAction(
                 actionEvent -> {
-                    projectPath = directoryChooser.showDialog(stage);
-                    directoryPath.setText(projectPath.getPath());
-                    startAnalyzerButton.setDisable(false);
+                    File tempProjPath = projectPath;
+                    projectPath = Optional.of(directoryChooser)
+                            .map(chooser -> chooser.showDialog(stage))
+                            .orElse(tempProjPath);
+
+                    if (Optional.ofNullable(projectPath).map(File::getPath).isPresent()) {
+                        directoryPath.setText(projectPath.getPath());
+                        startAnalyzerButton.setDisable(false);
+                    }
                 }
         );
 
         startAnalyzerButton.setOnAction(
                 actionEvent -> {
-                    resultInfo = StaticAnalyzer.starter(projectPath.getPath());
-                    Alert resultInfoMessageWindow = getAlertMessageWindow(resultInfo);
-                    resultInfoMessageWindow.show();
+                    if (Optional.ofNullable(projectPath).map(File::getPath).isPresent()) {
+                        startAnalyzerButton.setDisable(false);
+                        resultInfo = StaticAnalyzer.starter(projectPath.getPath());
+                        Alert resultInfoMessageWindow = getAlertMessageWindow(resultInfo);
+                        resultInfoMessageWindow.show();
+                        startAnalyzerButton.setDisable(true);
+                    }
                 }
         );
 
-        return new Node[] {
+        return new Node[]{
                 directoryLabel,
                 directoryPath,
                 directoryChooserButton,
@@ -94,7 +106,7 @@ public class MainForm extends Application {
     private Alert getAlertMessageWindow(AnalyzeResultInfo resultInfo) {
         Alert resultInfoMessageWindow = new Alert(resultInfo.getAlertType());
         resultInfoMessageWindow.setTitle(resultInfo.isResult() ? "Выполнено!" : "Ошибка");
-        resultInfoMessageWindow.setContentText(resultInfo.isResult() ? "Отчет " + resultInfo.getFolder() + " сохранен!"  : resultInfo.getErrorMessage());
+        resultInfoMessageWindow.setContentText(resultInfo.isResult() ? "Отчет " + resultInfo.getFolder() + " сохранен!" : resultInfo.getErrorMessage());
         resultInfoMessageWindow.setHeaderText(null);
 
         return resultInfoMessageWindow;

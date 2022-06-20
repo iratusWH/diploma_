@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HTMLComponentPages {
-    private static final String DIV_METRIC_WRAPPER = "<div class='metric_wrapper'>";
+    private static final String DIV_METRIC_WRAPPER = "<div class='metric_page_wrapper'>";
     private static final String DIV_STARTING_CLASS_FILE_PATH = "<div class='file_path'>";
     private static final String DIV_ENDING = "</div>\n";
 

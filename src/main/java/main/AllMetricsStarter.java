@@ -8,12 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import metrics.classes.oop.antipattern.AnemicDomainModelAntipattern;
 import metrics.classes.oop.antipattern.CallSuperAntipattern;
 import metrics.classes.oop.antipattern.GodObjectAntipattern;
-import metrics.classes.processing.metrics.CouplingBetweenObjectsMetricProcessing;
-import metrics.classes.processing.metrics.CyclomaticComplexityMetricProcessing;
-import metrics.classes.processing.metrics.DepthOfInheritanceTreeMetricProcessing;
-import metrics.classes.processing.metrics.HalsteadMetricsProcessing;
-import metrics.classes.processing.metrics.LOCMetricsProcessing;
-import metrics.classes.processing.metrics.MaintainabilityIndexMetricProcessing;
+import metrics.classes.processing.metrics.*;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithNamingConventionCheck;
 import metrics.classes.text.checks.VariableOnNewLineCheck;
@@ -51,13 +46,14 @@ public class AllMetricsStarter {
 
         metricList = Arrays.asList(
                 new CouplingBetweenObjectsMetricProcessing(),
-                new CyclomaticComplexityMetricProcessing(),
-                new HalsteadMetricsProcessing(),
-                new LOCMetricsProcessing(),
-                new BracketsCheck(),
-                new ClassComplyWithNamingConventionCheck(),
-//                new GodObjectAntipattern(),
-                new VariableOnNewLineCheck()
+                new CyclesComplexityMetricProcessing(),
+//                new CyclomaticComplexityMetricProcessing(),
+//                new HalsteadMetricsProcessing(),
+//                new LOCMetricsProcessing(),
+//                new BracketsCheck(),
+//                new ClassComplyWithNamingConventionCheck(),
+                new GodObjectAntipattern()
+//                new VariableOnNewLineCheck()
 //                new AnemicDomainModelAntipattern()
         );
 
@@ -112,7 +108,7 @@ public class AllMetricsStarter {
                         .orElseThrow()
         );
         metricList.forEach(metric -> doMetricFabric(file, metric));
-        doMaintainabilityMetric(file, metricList);
+//        doMaintainabilityMetric(file, metricList);
 
         metricComponentList.addAll(
                 metricList
@@ -121,7 +117,7 @@ public class AllMetricsStarter {
                         .toList()
         );
 
-        metricComponentList.add(miMetric.getHtmlComponent());
+//        metricComponentList.add(miMetric.getHtmlComponent());
     }
 
     private void doMaintainabilityMetric(CompilationUnit file, List<SimpleMetricProcessing> metricList) {
