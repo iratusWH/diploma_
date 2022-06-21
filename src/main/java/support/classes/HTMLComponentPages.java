@@ -8,8 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HTMLComponentPages {
-    private static final String DIV_METRIC_WRAPPER = "<div class='metric_page_wrapper'>";
+    private static final String DIV_METRIC_WRAPPER_OUTER = "<div class='metric_page_wrapper_outer'>";
+    private static final String DIV_METRIC_WRAPPER_INNER = "<div class='metric_page_wrapper_inner'>";
     private static final String DIV_STARTING_CLASS_FILE_PATH = "<div class='file_path'>";
+    private static final String DIV_PAGE = "<div class='page'>";
+    private static final String HEADER_OPEN = "<h3>";
+    private static final String HEADER_CLOSE = "</h3>\n";
     private static final String DIV_ENDING = "</div>\n";
 
     @Getter List<String> pages;
@@ -29,14 +33,20 @@ public class HTMLComponentPages {
     }
 
     private String composeSinglePage(String filePath, List<HTMLComponent> singleFileComponents) {
-        return DIV_METRIC_WRAPPER +
-                    DIV_STARTING_CLASS_FILE_PATH +
-                        filePath + "\n" +
+        return DIV_METRIC_WRAPPER_OUTER +
+                    DIV_METRIC_WRAPPER_INNER +
+                        DIV_STARTING_CLASS_FILE_PATH +
+                            HEADER_OPEN +
+                                "File path: " + filePath + "\n" +
+                            HEADER_CLOSE +
+                        DIV_ENDING +
+                        DIV_PAGE +
+                            singleFileComponents
+                                    .stream()
+                                    .map(HTMLComponent::composeHTML)
+                                    .collect(Collectors.joining("\n")) +
+                        DIV_ENDING +
                     DIV_ENDING +
-                        singleFileComponents
-                                .stream()
-                                .map(HTMLComponent::composeHTML)
-                                .collect(Collectors.joining("\n")) +
                 DIV_ENDING;
     }
 

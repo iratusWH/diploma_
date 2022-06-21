@@ -29,6 +29,7 @@ public class MainForm extends Application {
 
     private File projectPath;
     private AnalyzeResultInfo resultInfo;
+    private static final String ACTIVE_ANALYZE_BUTTON_CSS = "-fx-background-color: #3c703c; -fx-text-fill: #fdfdfd";
 
     public static void main(String[] args) {
         launch();
@@ -60,14 +61,23 @@ public class MainForm extends Application {
     private Node[] getNodes(Stage stage) {
         Label directoryLabel = new Label("Директория проекта");
         TextField directoryPath = new TextField();
-        Button directoryChooserButton = new Button("Выбор директории");
-        Button startAnalyzerButton = new Button("Приступить к анализу");
+        Button directoryChooserButton = new Button("Выбор рабочего пути проекта");
+        Button startAnalyzerButton = new Button("Приступить к анализу проекта");
         DirectoryChooser directoryChooser = new DirectoryChooser();
 
         directoryLabel.setTextFill(Color.WHEAT);
         directoryPath.appendText("Введите директорию проекта");
         directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         startAnalyzerButton.setDisable(true);
+        
+        directoryPath.setOnKeyTyped(
+                actionEvent -> {
+                    if (!Objects.equals(directoryPath.getText(), "Введите директорию проекта")) {
+                        startAnalyzerButton.setDisable(false);
+                        startAnalyzerButton.setStyle(ACTIVE_ANALYZE_BUTTON_CSS);
+                    }
+                }
+        );
 
         directoryChooserButton.setOnAction(
                 actionEvent -> {
@@ -79,18 +89,19 @@ public class MainForm extends Application {
                     if (Optional.ofNullable(projectPath).map(File::getPath).isPresent()) {
                         directoryPath.setText(projectPath.getPath());
                         startAnalyzerButton.setDisable(false);
+                        startAnalyzerButton.setStyle(ACTIVE_ANALYZE_BUTTON_CSS);
                     }
                 }
         );
 
         startAnalyzerButton.setOnAction(
                 actionEvent -> {
-                    if (Optional.ofNullable(projectPath).map(File::getPath).isPresent()) {
-                        startAnalyzerButton.setDisable(false);
-                        resultInfo = StaticAnalyzer.starter(projectPath.getPath());
+                    if (directoryPath.getText() != null) {
+                        resultInfo = StaticAnalyzer.starter(directoryPath.getText());
                         Alert resultInfoMessageWindow = getAlertMessageWindow(resultInfo);
                         resultInfoMessageWindow.show();
-                        startAnalyzerButton.setDisable(true);
+                        startAnalyzerButton.setDisable(false);
+                        startAnalyzerButton.setStyle(ACTIVE_ANALYZE_BUTTON_CSS);
                     }
                 }
         );

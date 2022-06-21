@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import metrics.classes.oop.antipattern.AnemicDomainModelAntipattern;
 import metrics.classes.oop.antipattern.CallSuperAntipattern;
 import metrics.classes.oop.antipattern.GodObjectAntipattern;
+import metrics.classes.oop.antipattern.ObjectCesspoolAntipattern;
 import metrics.classes.processing.metrics.*;
 import metrics.classes.text.checks.BracketsCheck;
 import metrics.classes.text.checks.ClassComplyWithNamingConventionCheck;
@@ -47,14 +48,16 @@ public class AllMetricsStarter {
         metricList = Arrays.asList(
                 new CouplingBetweenObjectsMetricProcessing(),
                 new CyclesComplexityMetricProcessing(),
-//                new CyclomaticComplexityMetricProcessing(),
-//                new HalsteadMetricsProcessing(),
-//                new LOCMetricsProcessing(),
-//                new BracketsCheck(),
-//                new ClassComplyWithNamingConventionCheck(),
-                new GodObjectAntipattern()
-//                new VariableOnNewLineCheck()
-//                new AnemicDomainModelAntipattern()
+                new CyclomaticComplexityMetricProcessing(),
+                new HalsteadMetricsProcessing(),
+                new LOCMetricsProcessing(),
+                new CyclesComplexityMetricProcessing(),
+                new BracketsCheck(),
+                new ClassComplyWithNamingConventionCheck(),
+                new GodObjectAntipattern(),
+                new VariableOnNewLineCheck(),
+                new AnemicDomainModelAntipattern(),
+                new ObjectCesspoolAntipattern()
         );
 
         miMetric = new MaintainabilityIndexMetricProcessing();

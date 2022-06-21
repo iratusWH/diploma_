@@ -1,18 +1,17 @@
 package metrics.classes.processing.metrics;
 
-import com.github.javaparser.Position;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -25,52 +24,70 @@ public class CyclesComplexityMetricProcessing extends SimpleMetricProcessingImpl
             || statement instanceof DoStmt
             || statement instanceof SwitchEntry
             || statement instanceof WhileStmt
+            || statement instanceof TryStmt
             || statement instanceof CatchClause;
 
 
     public CyclesComplexityMetricProcessing() {
         setMetricName(MetricNameEnum.CYCLES_COMPLEXITY_METRIC);
     }
-
+    private String methodName;
+    private Integer tempDepth;
     @Override
     public void processMetric() {
-       var depth = getAllMethodStmt(getFile())
-               .stream()
-               .map(this::getChildNodesStatements)
-               .flatMap(List::stream)
-               .map(this::getDepth)
-               .max(Integer::compare)
-               .orElse(0);
+        methodName = "";
+        tempDepth = 0;
+        var depth = getAllMethodStmt(getFile())
+                .stream()
+                .map(method -> {
+                        var dep = getDepth(method, 0);
+                        if (tempDepth < dep) {
+                            tempDepth = dep;
+                            methodName = method.getNameAsString();
+                        }
+                        return dep;
+                })
+                .max(Integer::compare)
+                .orElse(0);
 
-       log.info("{}", depth);
-
-       setMetric(depth);
+        setMetric( depth == 0 ? "Class hasn't branching statements" : "Max depth of nesting in method <underline>" + methodName + "</underline>: "+ depth);
     }
 
     List<MethodDeclaration> getAllMethodStmt(CompilationUnit file) {
-        return file.findAll(MethodDeclaration.class);
+        return Optional.ofNullable(file.findAll(MethodDeclaration.class)).orElse(new ArrayList<>());
     }
 
     List<Node> getChildNodesStatements(Node node) {
+        if (node.getChildNodes()
+                .stream()
+                .anyMatch(BlockStmt.class::isInstance)) {
+
+            return node.stream().filter(BlockStmt.class::isInstance).map(BlockStmt.class::cast)
+                    .map(Node::getChildNodes)
+                    .flatMap(List::stream)
+                    .filter(isStatement)
+                    .toList();
+        }
+
         return node.getChildNodes()
                 .stream()
                 .filter(isStatement)
                 .toList();
     }
 
-    Integer getDepth(Node node) {
+    Integer getDepth(Node node, Integer depth) {
 
         List<Node> nodes = getChildNodesStatements(node);
 
         if (!nodes.isEmpty()) {
             return nodes
                     .stream()
-                    .map(this::getDepth)
+                    .map(innerNode -> getDepth(innerNode, depth + 1))
                     .max(Integer::compare)
-                    .orElse(0);
+                    .orElse(depth + 1);
         }
 
-        return 0;
+        return depth;
     }
 
 }

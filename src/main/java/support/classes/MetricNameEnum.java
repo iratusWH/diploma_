@@ -19,10 +19,12 @@ public enum MetricNameEnum {
     LINES_OF_CODE_METRIC("Lines of code"),
     BRACKET_CHECK("Bracket Check"),
     CLASS_COMPLY_WITH_CONVENTION_CHECK("Class comply with convention check"),
+    VARIABLE_DECLARATION_ON_NEW_LINE_CHECK("Variable Declaration on new line check"),
+    JAVA_CODE_STYLE_CHECK("Java Code Style Check"),
     GOD_OBJECT_ANTIPATTERN("God Object Antipattern"),
     ANEMIC_DOMAIN_MODEL_ANTIPATTERN("Anemic Domain Model Antipattern"),
     CALL_SUPER_ANTIPATTERN("Call Super Antipattern"),
-    VARIABLE_DECLARATION_ON_NEW_LINE_CHECK("Variable Declaration on new line check"),
+    OBJECT_CESSPOOL_ANTIPATTERN("Object Cesspool Antipattern"),
     DEFAULT_METRIC_NAME("METRIC");
 
     final String name;

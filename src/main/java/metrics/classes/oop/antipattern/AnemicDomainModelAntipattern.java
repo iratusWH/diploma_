@@ -4,26 +4,30 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import lombok.extern.slf4j.Slf4j;
 import metrics.classes.implementations.SimpleMetricProcessingImpl;
 import support.classes.MetricNameEnum;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
 
     private final Predicate<MarkerAnnotationExpr> dataAnnotation = annotation -> annotation.getNameAsString().contains("Data");
-    private static final Predicate<String> noneServiceMethods = name -> !"equals".equals(name) || !"hashCode".equals(name) || !"toString".equals(name);
+
 
     NodeList<BodyDeclaration<?>> allClassNodes;
     List<BodyDeclaration<?>> fieldsDeclarations;
     List<String> fieldsNames;
     List<BodyDeclaration<?>> methodsDeclarations;
     List<String> methodsNames;
-    Integer methodsCount;
+    Long methodsCount;
+    Long fieldsMethodsCount;
 
     public AnemicDomainModelAntipattern(){
         setMetricName(MetricNameEnum.ANEMIC_DOMAIN_MODEL_ANTIPATTERN);
@@ -31,14 +35,13 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
 
     @Override
     public void processMetric() {
-        methodsCount = 0;
-        // Getter or Setter or data annotation
-        // check the fields that not annotate but has a methods get/set
         getAllClassMembers();
+
         getClassFields();
         getAllClassMethods();
+        hasGetterSetterMethods();
 
-        setMetric(hasGetterSetterMethods());
+        setMetric(hasOnlyFields() || hasGetterSetterMethods() || hasOnlyFields() && hasDataAnnotationBeforeClass() ? "Domain model class" : "a Usual class");
         log.info("{}", hasDataAnnotationBeforeClass() && hasOnlyFields() || hasOnlyFields());
 
     }
@@ -46,7 +49,7 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
     private void getAllClassMembers() {
         allClassNodes = getFile()
                 .findFirst(ClassOrInterfaceDeclaration.class)
-                .map(ClassOrInterfaceDeclaration::getMembers)
+                .map(TypeDeclaration::getMembers)
                 .orElseGet(NodeList::new);
     }
 
@@ -62,9 +65,9 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
                 .map(nodes -> nodes
                         .stream()
                         .filter(VariableDeclarator.class::isInstance)
-                        .findFirst()
-                        .orElseThrow()
+                        .toList()
                 )
+                .flatMap(List::stream)
                 .map(node -> ((VariableDeclarator) node).getNameAsString())
                 .toList();
     }
@@ -96,21 +99,28 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
                 .filter(MethodDeclaration.class::isInstance)
                 .toList();
 
-        methodsNames = methodsDeclarations
+        methodsCount = methodsDeclarations
                 .stream()
                 .map(method -> ((MethodDeclaration) method).getNameAsString())
-                .filter(noneServiceMethods)
-                .toList();
+                .count();
 
     }
 
     private boolean hasGetterSetterMethods() {
-        return fieldsNames.size() == fieldsNames
+
+        methodsNames = methodsDeclarations.stream()
+                .map(Node::getChildNodes)
+                .filter(SimpleName.class::isInstance)
+                .flatMap(List::stream)
+                .map(node -> ((SimpleName) node).asString())
+                .toList();
+
+        fieldsMethodsCount = fieldsNames
                 .stream()
                 .filter(field -> !methodsNames
                         .stream()
                         .filter(method -> {
-                            if (isSetOrGetMethod(method, field)) {
+                            if (isSetOrGetMethod(method, field) || isServiceMethod(method)) {
                                 methodsCount += 1;
                                 return true;
                             }
@@ -120,9 +130,9 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
                         .toList()
                         .isEmpty()
                 )
-                .toList()
-                .size()
-                && methodsCount == fieldsNames.size();
+                .count();
+
+        return fieldsNames.size() > fieldsMethodsCount && Objects.equals(methodsCount, fieldsMethodsCount);
 
     }
 
@@ -141,5 +151,9 @@ public class AnemicDomainModelAntipattern extends SimpleMetricProcessingImpl {
 
     private String changeFirstChar(String field) {
         return field.substring(0, 1).toUpperCase() + field.substring(1);
+    }
+
+    private boolean isServiceMethod(String name) {
+        return "equals".equals(name) || "hashCode".equals(name) || "toString".equals(name);
     }
 }
