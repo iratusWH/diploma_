@@ -18,13 +18,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import main.StaticAnalyzer;
 import support.classes.AnalyzeResultInfo;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 public class MainForm extends Application {
 
     private File projectPath;
@@ -100,6 +104,11 @@ public class MainForm extends Application {
                         resultInfo = StaticAnalyzer.starter(directoryPath.getText());
                         Alert resultInfoMessageWindow = getAlertMessageWindow(resultInfo);
                         resultInfoMessageWindow.show();
+                        try {
+                            Desktop.getDesktop().open(new File(resultInfo.getFolder()));
+                        } catch (IOException e) {
+                            log.warn("This desktop cannot display report automatically. Error - {} ", e.getMessage(), e);
+                        }
                         startAnalyzerButton.setDisable(false);
                         startAnalyzerButton.setStyle(ACTIVE_ANALYZE_BUTTON_CSS);
                     }

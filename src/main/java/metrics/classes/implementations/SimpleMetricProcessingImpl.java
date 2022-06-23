@@ -16,7 +16,7 @@ import support.classes.MetricNameEnum;
  */
 @Slf4j
 @Data
-public abstract class SimpleMetricProcessingImpl implements SimpleMetricProcessing, MetricProcessing {
+public abstract class SimpleMetricProcessingImpl implements SimpleMetricProcessing {
 
     private Object metric; // результирующая метрика
     private MetricNameEnum metricName; // название метрики

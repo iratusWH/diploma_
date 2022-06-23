@@ -14,6 +14,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * StaticAnalyzer
+ * <p>
+ * Класс нахождения проблемных мест в коде связанных с написанием переменных на одной строке
+ * Пример:
+ * int a, b; // в соответствии с конвенциями Google и Oracle - не правильное объявление
+ *
+ * Пример правильного объявления:
+ * int a;
+ * int b;
+ *
+ * Однако для цикла for конструкция из первого примера допустима
+ * @author Маркелов Александр A-07-18
+ */
 @Slf4j
 public class VariableOnNewLineCheck extends SimpleMetricProcessingImpl {
 

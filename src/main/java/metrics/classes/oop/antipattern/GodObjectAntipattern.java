@@ -43,7 +43,7 @@ public class GodObjectAntipattern extends SimpleMetricProcessingImpl {
                 .filter(MethodDeclaration::isStatic)
                 .count();
 
-        long fieldsCount = getFile()
+        Long fieldsCount = getFile()
                 .findAll(FieldDeclaration.class)
                 .stream()
                 .filter(Predicate.not(NodeWithStaticModifier::isStatic))
@@ -60,7 +60,7 @@ public class GodObjectAntipattern extends SimpleMetricProcessingImpl {
         );
     }
 
-    private String getResultByClassInfo(Long staticMethodsCount, Integer methodsCount, Long constantsCount, long fieldsCount) {
+    private String getResultByClassInfo(Long staticMethodsCount, Integer methodsCount, Long constantsCount, Long fieldsCount) {
         boolean isUtilClass = staticMethodsCount > METHODS_COUNT && fieldsCount == 0;
         boolean isConstantsClass = constantsCount > CONSTANTS_COUNT && staticMethodsCount == 0 && methodsCount == 0 && fieldsCount == 0;
         boolean isDataClass = fieldsCount > FIELDS_COUNT && staticMethodsCount == 0 && methodsCount < 4;
